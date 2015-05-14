@@ -4,7 +4,7 @@
 # very first boot.
 
 # `raspboot` then installs additional packages and modifies the system
-# configuration accordingly. Among others `lindiagd` may be installed
+# configuration accordingly. Among others `synodiagd` may be installed
 # using `git clone`. Followed by calling this `install.sh` script
 
 # Installing `raspboot` requires:
@@ -17,7 +17,7 @@
 # To suppress git detecting changes by chmod:
 git config core.fileMode false
 # set the branch
-echo master > $HOME/.lindiagd.branch
+echo master > $HOME/.synodiagd.branch
 
 if [ -e /mnt/share1 ]; then
   echo "Creating mountpoint..."

@@ -1,2 +1,2 @@
-# lindiagd
+# synodiagd
 Linux diagnostics

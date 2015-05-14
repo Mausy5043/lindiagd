@@ -87,7 +87,7 @@ def do_xml(wpath):
 	uname           = os.uname()
 	Tcpu            = float(commands.getoutput("cat /sys/class/thermal/thermal_zone0/temp"))/1000
 	fcpu            = float(commands.getoutput("cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"))/1000
-	lindiagdbranch = commands.getoutput("cat /home/pi/.lindiagd.branch")
+	synodiagdbranch = commands.getoutput("cat /home/pi/.synodiagd.branch")
 	gitbinbranch    = commands.getoutput("cat /home/pi/.raspboot.branch")
 	uptime          = commands.getoutput("uptime")
 	dfh             = commands.getoutput("df -h")
@@ -117,7 +117,7 @@ def do_xml(wpath):
 	f.write(' <uptime>\n')
 	f.write(uptime + '\n')
 	f.write(uname[0]+ ' ' +uname[1]+ ' ' +uname[2]+ ' ' +uname[3]+ ' ' +uname[4]+ ' ' +platform.platform() +'\n')
-	f.write(' - lindiagd on: '+ lindiagdbranch +'\n')
+	f.write(' - synodiagd on: '+ synodiagdbranch +'\n')
 	f.write(' - gitbin    on: '+ gitbinbranch +'\n')
 	f.write('\nTop 10 processes:\n' + psout +'\n')
 	f.write('</uptime>\n')
@@ -135,7 +135,7 @@ def unlock(fname):
 		os.remove(fname)
 
 if __name__ == "__main__":
-	daemon = MyDaemon('/tmp/lindiagd-99.pid')
+	daemon = MyDaemon('/tmp/synodiagd-99.pid')
 	if len(sys.argv) == 2:
 		if 'start' == sys.argv[1]:
 			daemon.start()

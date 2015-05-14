@@ -64,7 +64,7 @@ def do_report(result):
 	# Get the time and date in human-readable form and UN*X-epoch...
 	outDate = commands.getoutput("date '+%F %H:%M:%S, %s'")
 	result = ', '.join(map(str, result))
-	flock = '/tmp/lindiagd-12.lock'
+	flock = '/tmp/synodiagd-12.lock'
 	lock(flock)
 	f = file('/tmp/12-load-cpu.txt', 'a')
 	f.write('{0}, {1}\n'.format(outDate, result) )
@@ -80,7 +80,7 @@ def unlock(fname):
 		os.remove(fname)
 
 if __name__ == "__main__":
-	daemon = MyDaemon('/tmp/lindiagd-12.pid')
+	daemon = MyDaemon('/tmp/synodiagd-12.pid')
 	if len(sys.argv) == 2:
 		if 'start' == sys.argv[1]:
 			daemon.start()

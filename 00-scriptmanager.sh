@@ -1,12 +1,12 @@
 #! /bin/sh
 
 # 00-scriptmanager.sh is run periodically by a private cronjob.
-# * It synchronises the local copy of lindiagd with the current github branch
+# * It synchronises the local copy of synodiagd with the current github branch
 # * It checks the state of and (re-)starts daemons if they are not (yet) running.
 
-branch=$(cat ~/.lindiagd.branch)
+branch=$(cat ~/.synodiagd.branch)
 clnt=$(hostname)
-cd $HOME/lindiagd
+cd $HOME/synodiagd
 
 # Synchronise local copy with $branch
 git pull
@@ -35,32 +35,32 @@ chmod -R 744 *
 ######## Stop daemons ######
 
 if [[ -n "$DIFFd11" ]]; then
-  logger -t lindiagd "Source daemon11 has changed."
+  logger -t synodiagd "Source daemon11 has changed."
   ./daemon11.py stop
 fi
 if [[ -n "$DIFFd12" ]]; then
-  logger -t lindiagd "Source daemon12 has changed."
+  logger -t synodiagd "Source daemon12 has changed."
   ./daemon12.py stop
 fi
 if [[ -n "$DIFFd13" ]]; then
-  logger -t lindiagd "Source daemon13 has changed."
+  logger -t synodiagd "Source daemon13 has changed."
   ./daemon13.py stop
 fi
 if [[ -n "$DIFFd14" ]]; then
-  logger -t lindiagd "Source daemon14 has changed."
+  logger -t synodiagd "Source daemon14 has changed."
   ./daemon14.py stop
 fi
 if [[ -n "$DIFFd15" ]]; then
-  logger -t lindiagd "Source daemon15 has changed."
+  logger -t synodiagd "Source daemon15 has changed."
   ./daemon15.py stop
 fi
 if [[ -n "$DIFFd99" ]]; then
-  logger -t lindiagd "Source daemon99 has changed."
+  logger -t synodiagd "Source daemon99 has changed."
   ./daemon99.py stop
 fi
 
 if [[ -n "$DIFFlib" ]]; then
-  logger -t lindiagd "Source libdaemon has changed."
+  logger -t synodiagd "Source libdaemon has changed."
   # stop all daemons
   ./daemon11.py stop
   ./daemon12.py stop
@@ -73,14 +73,14 @@ fi
 ######## (Re-)start daemons ######
 
 destale () {
-  if [ -e /tmp/lindiagd-$1.pid ]; then
-    if ! kill -0 $(cat /tmp/lindiagd-$1.pid)  > /dev/null 2>&1; then
-      logger -t lindiagd "Stale daemon$1 pid-file found."
-      rm /tmp/lindiagd-$1.pid
+  if [ -e /tmp/synodiagd-$1.pid ]; then
+    if ! kill -0 $(cat /tmp/synodiagd-$1.pid)  > /dev/null 2>&1; then
+      logger -t synodiagd "Stale daemon$1 pid-file found."
+      rm /tmp/synodiagd-$1.pid
       ./daemon$1.py start
     fi
   else
-    logger -t lindiagd "Found daemon$1 not running."
+    logger -t synodiagd "Found daemon$1 not running."
     ./daemon$1.py start
   fi
 }
