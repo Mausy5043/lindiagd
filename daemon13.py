@@ -53,7 +53,7 @@ def do_work():
 	loIn = 0
 	loOut = 0
 
-	list = commands.getoutput("cat /proc/net/dev").splitlines().replace(":"," ")
+	list = commands.getoutput("cat /proc/net/dev").replace(":"," ").splitlines()
 	for line in range(2,len(list)):
 		if DEBUG:print list[line]
 		device = list[line].split()[0]
