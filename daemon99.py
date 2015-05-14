@@ -89,14 +89,13 @@ def do_mv_data(rpath):
 def do_xml(wpath):
 	#
 	uname           = os.uname()
-	Tcpu            = float(commands.getoutput("cat /sys/class/thermal/thermal_zone0/temp"))/1000
+	Tcpu            = "---" #float(commands.getoutput("cat /sys/class/thermal/thermal_zone0/temp"))/1000
 	fcpu            = float(commands.getoutput("cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"))/1000
-	synodiagdbranch = commands.getoutput("cat /home/pi/.synodiagd.branch")
-	gitbinbranch    = commands.getoutput("cat /home/pi/.raspboot.branch")
+	synodiagdbranch = commands.getoutput("cat $HOME/.synodiagd.branch")
 	uptime          = commands.getoutput("uptime")
-	dfh             = commands.getoutput("df -h")
-	freeh           = commands.getoutput("free -h")
-	psout           = commands.getoutput("ps -e -o pcpu,args | awk 'NR>2' | sort -nr | head -10 | sed 's/&/\&amp;/g' | sed 's/>/\&gt;/g'")
+	dfh             = commands.getoutput("df")
+	freeh           = commands.getoutput("free")
+	psout           = commands.getoutput("top -b -n 1 | cut -c 37- |awk 'NR>4' |sort -rnk 1 | head -10 | sed 's/&/\&amp;/g' | sed 's/>/\&gt;/g'")
 	#
 	f = file(wpath + '/status.txt', 'w')
 
@@ -122,7 +121,6 @@ def do_xml(wpath):
 	f.write(uptime + '\n')
 	f.write(uname[0]+ ' ' +uname[1]+ ' ' +uname[2]+ ' ' +uname[3]+ ' ' +uname[4]+ ' ' +platform.platform() +'\n')
 	f.write(' - synodiagd on: '+ synodiagdbranch +'\n')
-	f.write(' - gitbin    on: '+ gitbinbranch +'\n')
 	f.write('\nTop 10 processes:\n' + psout +'\n')
 	f.write('</uptime>\n')
 
