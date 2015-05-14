@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 
 # Based on previous work by
 # Charles Menguy (see: http://stackoverflow.com/questions/10217067/implementing-a-full-python-unix-style-daemon-process)
@@ -11,6 +11,8 @@
 import os, sys, time, math, commands
 from libdaemon import Daemon
 
+DEBUG = False
+
 class MyDaemon(Daemon):
 	def run(self):
 		sampleptr = 0
@@ -22,11 +24,13 @@ class MyDaemon(Daemon):
 		cycleTime = samples * sampleTime
 		# sync to whole minute
 		waitTime = (cycleTime + sampleTime) - (time.time() % cycleTime)
+		if DEBUG:print "Waiting {0} s".format(int(waitTime))
 		time.sleep(waitTime)
 		while True:
 			startTime = time.time()
 
 			result = do_work().split(',')
+			if DEBUG: print result
 
 			data[sampleptr] = map(float, result)
 			# report sample average
@@ -44,11 +48,13 @@ class MyDaemon(Daemon):
 
 			waitTime = sampleTime - (time.time() - startTime) - (startTime%sampleTime)
 			if (waitTime > 0):
+				if DEBUG:print "Waiting {0} s".format(int(waitTime))
 				time.sleep(waitTime)
 
 def do_work():
 	# 6 datapoints gathered here
 	outHistLoad = commands.getoutput("cat /proc/loadavg").replace(" ",", ").replace("/",", ")
+	if DEBUG:print outHistLoad
 
 	# 5 datapoints gathered here
 	outCpu = commands.getoutput("dstat 1 2").splitlines()[3].split()
@@ -57,7 +63,7 @@ def do_work():
 	outCpuID = outCpu[2]
 	outCpuWA = outCpu[3]
 	outCpuST = 0
-
+	if DEBUG: print outHistLoad, outCpuUS, outCpuSY, outCpuID, outCpuWA, outCpuST
 	return '{0}, {1}, {2}, {3}, {4}, {5}'.format(outHistLoad, outCpuUS, outCpuSY, outCpuID, outCpuWA, outCpuST)
 
 def do_report(result):
@@ -91,6 +97,7 @@ if __name__ == "__main__":
 		elif 'foreground' == sys.argv[1]:
 			# assist with debugging.
 			print "Debug-mode started. Use <Ctrl>+C to stop."
+			DEBUG = True
 			daemon.run()
 		else:
 			print "Unknown command"
