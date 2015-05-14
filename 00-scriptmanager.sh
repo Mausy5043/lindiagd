@@ -7,7 +7,7 @@
 branch=$(cat ~/.lindiagd.branch)
 clnt=$(hostname)
 usr=$(whoami)
-pushd /home/$usr/lindiagd
+cd /home/$usr/lindiagd
 
 # Synchronise local copy with $branch
 git fetch origin
@@ -92,7 +92,7 @@ destale 14
 destale 15
 destale 99
 
-popd
+#popd
 
 # the $MOUNTPOINT is in /etc/fstab
 # in the unlikely event that the mount was lost,
