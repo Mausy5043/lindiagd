@@ -17,7 +17,7 @@
 # To suppress git detecting changes by chmod:
 git config core.fileMode false
 # set the branch
-echo master > ~/.lindiagd.branch
+echo master > $HOME/.lindiagd.branch
 
 if [ -e /mnt/share1 ]; then
   echo "Creating mountpoint..."

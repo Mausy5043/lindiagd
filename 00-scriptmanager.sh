@@ -6,8 +6,7 @@
 
 branch=$(cat ~/.lindiagd.branch)
 clnt=$(hostname)
-usr=$(whoami)
-cd /home/$usr/lindiagd
+cd $HOME/lindiagd
 
 # Synchronise local copy with $branch
 git fetch origin
