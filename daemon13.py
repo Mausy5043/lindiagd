@@ -30,6 +30,7 @@ class MyDaemon(Daemon):
 			startTime = time.time()
 
 			result = do_work().split(',')
+			if DEBUG:print result
 			data = map(int, result)
 
 			sampleptr = sampleptr + 1
@@ -39,6 +40,7 @@ class MyDaemon(Daemon):
 
 			waitTime = sampleTime - (time.time() - startTime) - (startTime%sampleTime)
 			if (waitTime > 0):
+				if DEBUG:print "Waiting {0} s".format(int(waitTime))
 				time.sleep(waitTime)
 
 def do_work():
