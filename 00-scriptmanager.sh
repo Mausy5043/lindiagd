@@ -8,6 +8,9 @@ branch=$(cat ~/.synodiagd.branch)
 clnt=$(hostname)
 cd $HOME/synodiagd
 
+# force recompilation of libraries
+rm *.pyc
+
 # Synchronise local copy with $branch
 git pull
 git fetch origin
