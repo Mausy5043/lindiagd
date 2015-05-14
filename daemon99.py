@@ -12,6 +12,7 @@ import os, sys, shutil, glob, platform, time, commands
 from libdaemon import Daemon
 
 DEBUG = False
+os.nice(8)
 
 class MyDaemon(Daemon):
 	def run(self):
