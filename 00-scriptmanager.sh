@@ -71,7 +71,7 @@ fi
 
 ######## (Re-)start daemons ######
 
-function destale {
+destale () {
   if [ -e /tmp/lindiagd-$1.pid ]; then
     if ! kill -0 $(cat /tmp/lindiagd-$1.pid)  > /dev/null 2>&1; then
       logger -t lindiagd "Stale daemon$1 pid-file found."
