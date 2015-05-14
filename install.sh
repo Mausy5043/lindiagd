@@ -19,4 +19,9 @@ git config core.fileMode false
 # set the branch
 echo master > ~/.lindiagd.branch
 
+if [ -e /mnt/share1 ]; then
+  echo "Creating mountpoint..."
+  sudo mkdir /mnt/share1
+fi
+
 exit 0
