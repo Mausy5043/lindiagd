@@ -104,5 +104,6 @@ if grep -qs '/mnt/share1 ' /proc/mounts; then
   echo "mounted"
 else
 	# Mount the share containing the data
+  echo "Mounting $MOUNTDRIVE on $MOUNTPOINT"
 	sudo mount $MOUNTDRIVE $MOUNTPOINT
 fi
