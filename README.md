@@ -1,0 +1,2 @@
+# lindiagd
+Linux diagnostics
