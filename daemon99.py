@@ -30,7 +30,8 @@ class MyDaemon(Daemon):
 
 			if os.path.ismount(mount_path):
 				#do_mv_data(remote_path)
-				do_xml(remote_path)
+				#do_xml(remote_path)
+				do_xml('/tmp')
 
 			waitTime = sampleTime - (time.time() - startTime) - (startTime%sampleTime)
 			if (waitTime > 0):
