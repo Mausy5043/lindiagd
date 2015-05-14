@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 
 # 00-scriptmanager.sh is run periodically by a private cronjob.
 # * It synchronises the local copy of lindiagd with the current github branch

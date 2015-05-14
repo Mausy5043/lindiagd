@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 
 # `raspbian-ua-netinst` installs `raspboot` and makes sure it is run at the
 # very first boot.
