@@ -18,7 +18,6 @@ git checkout $branch
  # git log --graph --oneline --date-order --decorate --color --all
 
  DIFFlib=$(git --no-pager diff --name-only $branch..origin/$branch -- ./libdaemon.py)
- DIFFd11=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon11.py)
  DIFFd12=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon12.py)
  DIFFd13=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon13.py)
  DIFFd14=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon14.py)
@@ -34,10 +33,6 @@ chmod -R 744 *
 
 ######## Stop daemons ######
 
-if [[ -n "$DIFFd11" ]]; then
-  logger -t synodiagd "Source daemon11 has changed."
-  ./daemon11.py stop
-fi
 if [[ -n "$DIFFd12" ]]; then
   logger -t synodiagd "Source daemon12 has changed."
   ./daemon12.py stop
@@ -62,7 +57,6 @@ fi
 if [[ -n "$DIFFlib" ]]; then
   logger -t synodiagd "Source libdaemon has changed."
   # stop all daemons
-  ./daemon11.py stop
   ./daemon12.py stop
   ./daemon13.py stop
   ./daemon14.py stop
@@ -85,7 +79,6 @@ destale () {
   fi
 }
 
-destale 11
 destale 12
 destale 13
 destale 14
