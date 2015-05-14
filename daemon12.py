@@ -51,11 +51,11 @@ def do_work():
 	outHistLoad = commands.getoutput("cat /proc/loadavg").replace(" ",", ").replace("/",", ")
 
 	# 5 datapoints gathered here
-	outCpu = commands.getoutput("vmstat 1 2").splitlines()[3].split()
-	outCpuUS = outCpu[12]
-	outCpuSY = outCpu[13]
-	outCpuID = outCpu[14]
-	outCpuWA = outCpu[15]
+	outCpu = commands.getoutput("dstat 1 2").splitlines()[3].split()
+	outCpuUS = outCpu[0]
+	outCpuSY = outCpu[1]
+	outCpuID = outCpu[2]
+	outCpuWA = outCpu[3]
 	outCpuST = 0
 
 	return '{0}, {1}, {2}, {3}, {4}, {5}'.format(outHistLoad, outCpuUS, outCpuSY, outCpuID, outCpuWA, outCpuST)
