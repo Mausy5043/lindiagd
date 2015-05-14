@@ -44,9 +44,9 @@ class MyDaemon(Daemon):
 
 def do_work():
 	# 3 datapoints gathered here
-	kernlog = commands.getoutput("sudo wc -l /var/log/kern.log").split()[0]
-	messlog = commands.getoutput("sudo wc -l /var/log/messages").split()[0]
-	syslog  = commands.getoutput("sudo wc -l /var/log/syslog.log").split()[0]
+	kernlog = commands.getoutput("wc -l /var/log/kern.log").split()[0]
+	messlog = commands.getoutput("wc -l /var/log/messages").split()[0]
+	syslog  = commands.getoutput("wc -l /var/log/syslog.log").split()[0]
 	if DEBUG:print kernlog, messlog, syslog
 
 	return '{0}, {1}, {2}'.format(kernlog, messlog, syslog)
