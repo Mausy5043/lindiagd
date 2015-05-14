@@ -11,8 +11,14 @@
 import os, sys, shutil, glob, platform, time, commands
 from libdaemon import Daemon
 
+DEBUG = False
+
 class MyDaemon(Daemon):
 	def run(self):
+		myname = os.uname()[1]
+		mount_path = '/mnt/share1/'
+		remote_path = mount_path + myname
+		remote_lock = remote_path + '/client.lock'
 		sampleptr = 0
 		samples = 1
 
@@ -20,11 +26,8 @@ class MyDaemon(Daemon):
 		cycleTime = samples * sampleTime
 		# sync to whole minute
 		waitTime = (cycleTime + sampleTime) - (time.time() % cycleTime)
+		if DEBUG:print "Waiting {0} s".format(int(waitTime))
 		time.sleep(waitTime)
-		myname = os.uname()[1]
-		mount_path = '/mnt/share1/'
-		remote_path = mount_path + myname
-		remote_lock = remote_path + '/client.lock'
 		while True:
 			startTime=time.time()
 
@@ -146,6 +149,7 @@ if __name__ == "__main__":
 		elif 'foreground' == sys.argv[1]:
 			# assist with debugging.
 			print "Debug-mode started. Use <Ctrl>+C to stop."
+			DEBUG = True
 			daemon.run()
 		else:
 			print "Unknown command"

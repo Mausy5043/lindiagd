@@ -12,6 +12,8 @@
 import os, sys, time, math, commands
 from libdaemon import Daemon
 
+DEBUG = False
+
 class MyDaemon(Daemon):
 	def run(self):
 		sampleptr = 0
@@ -22,6 +24,7 @@ class MyDaemon(Daemon):
 		cycleTime = samples * sampleTime
 		# sync to whole minute
 		waitTime = (cycleTime + sampleTime) - (time.time() % cycleTime)
+		if DEBUG:print "Waiting {0} s".format(int(waitTime))
 		time.sleep(waitTime)
 		while True:
 			startTime = time.time()
@@ -78,6 +81,7 @@ if __name__ == "__main__":
 		elif 'foreground' == sys.argv[1]:
 			# assist with debugging.
 			print "Debug-mode started. Use <Ctrl>+C to stop."
+			DEBUG = True
 			daemon.run()
 		else:
 			print "Unknown command"
