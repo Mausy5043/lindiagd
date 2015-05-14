@@ -9,6 +9,7 @@ clnt=$(hostname)
 cd $HOME/lindiagd
 
 # Synchronise local copy with $branch
+git pull
 git fetch origin
 git checkout $branch
 
