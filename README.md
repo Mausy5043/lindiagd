@@ -1,2 +1,2 @@
 # synodiagd
-Linux diagnostics
+Linux diagnostics specifically tuned for Synology NAS.
