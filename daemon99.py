@@ -27,8 +27,10 @@ class MyDaemon(Daemon):
 		cycleTime = samples * sampleTime
 		# sync to whole minute
 		waitTime = (cycleTime + sampleTime) - (time.time() % cycleTime)
-		if DEBUG:print "Waiting {0} s".format(int(waitTime))
-		time.sleep(waitTime)
+		if DEBUG:
+			print "Not Waiting {0} s".format(int(waitTime))
+		else:
+			time.sleep(waitTime)
 		while True:
 			startTime=time.time()
 
@@ -71,7 +73,7 @@ def do_mv_data(rpath):
 	while (count_internal_locks > 0):
 		time.sleep(1)
 		count_internal_locks=0
-		for file in glob.glob(r'/tmp/*.lock'):
+		for file in glob.glob(r'/tmp/synodiagd*.lock'):
 			count_internal_locks += 1
 
 		if DEBUG:print "{0} internal locks".format(count_internal_locks)

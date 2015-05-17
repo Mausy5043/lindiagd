@@ -35,6 +35,10 @@ rm *.pyc
 # Set permissions
 chmod -R 744 *
 
+if [[ ! -d /tmp/synodiagd ]]; then
+  mkdir /tmp/synodiagd
+fi
+
 ######## Stop daemons ######
 
 if [[ -n "$DIFFd12" ]]; then
