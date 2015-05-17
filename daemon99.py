@@ -57,7 +57,7 @@ def do_mv_data(rpath):
 
 	while os.path.isfile(hostlock):
 		# wait while the server has locked the directory
-		if DEBUG:print "host locked"
+		if DEBUG:print "host locked (waiting)"
 		time.sleep(1)
 
 	# server already sets the client.lock. Do it anyway.
@@ -67,8 +67,10 @@ def do_mv_data(rpath):
 	# prevent race conditions
 	while os.path.isfile(hostlock):
 		# wait while the server has locked the directory
-		if DEBUG:print "host locked"
+		if DEBUG:print "host got locked (waiting)"
 		time.sleep(1)
+
+	if DEBUG:print "host unlocked"
 
 	while (count_internal_locks > 0):
 		time.sleep(1)
@@ -80,21 +82,14 @@ def do_mv_data(rpath):
 
 	if DEBUG:print "0 internal locks"
 
-	for file in glob.glob(r'/tmp/*.csv'):
-		if DEBUG:print file
-		if os.path.isfile(clientlock):
-			if not (os.path.isfile(rpath + "/" + os.path.split(file)[1])):
-			  shutil.move(file, rpath)
-
 	for file in glob.glob(r'/tmp/synodiagd/*.csv'):
 		if DEBUG:print file
 		if os.path.isfile(clientlock):
 			if not (os.path.isfile(rpath + "/" + os.path.split(file)[1])):
 			  shutil.move(file, rpath)
 
-
 	unlock(clientlock)
-	if DEBUG:print "unlocked"
+	if DEBUG:print "unset clientlock"
 
 	return
 
