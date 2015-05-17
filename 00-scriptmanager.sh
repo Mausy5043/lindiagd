@@ -81,10 +81,10 @@ fi
 ######## (Re-)start daemons ######
 
 destale () {
-  if [ -e /tmp/synodiagd-$1.pid ]; then
-    if ! kill -0 $(cat /tmp/synodiagd-$1.pid)  > /dev/null 2>&1; then
+  if [ -e /tmp/synodiagd/$1.pid ]; then
+    if ! kill -0 $(cat /tmp/synodiagd/$1.pid)  > /dev/null 2>&1; then
       logger -t synodiagd "Stale daemon$1 pid-file found."
-      rm /tmp/synodiagd-$1.pid
+      rm /tmp/synodiagd/$1.pid
       ./daemon$1.py start
     fi
   else
