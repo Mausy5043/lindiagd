@@ -103,10 +103,10 @@ def do_xml(wpath):
 	dfh             = commands.getoutput("df")
 	freeh           = commands.getoutput("free")
 	psout           = commands.getoutput("top -b -n 1 | cut -c 37- |awk 'NR>4' |sort -rnk 1 | head -10 | sed 's/&/\&amp;/g' | sed 's/>/\&gt;/g'")
-	Tsda			 			= commands.getoutput("smartctl -A /dev/sda -d ata |grep Temperature_Celsius |awk '{print $10}'")
-	Tsdb 						= commands.getoutput("smartctl -A /dev/sdb -d ata |grep Temperature_Celsius |awk '{print $10}'")
-	Tsdc 						= commands.getoutput("smartctl -A /dev/sdc -d ata |grep Temperature_Celsius |awk '{print $10}'")
-	Tsdd 						= commands.getoutput("smartctl -A /dev/sdd -d ata |grep Temperature_Celsius |awk '{print $10}'")
+	Tsda            = commands.getoutput("smartctl -A /dev/sda -d ata |grep Temperature_Celsius |awk '{print $10}'")
+	Tsdb            = commands.getoutput("smartctl -A /dev/sdb -d ata |grep Temperature_Celsius |awk '{print $10}'")
+	Tsdc            = commands.getoutput("smartctl -A /dev/sdc -d ata |grep Temperature_Celsius |awk '{print $10}'")
+	Tsdd            = commands.getoutput("smartctl -A /dev/sdd -d ata |grep Temperature_Celsius |awk '{print $10}'")
 	#
 	f = file(wpath + '/status.xml', 'w')
 
@@ -122,7 +122,7 @@ def do_xml(wpath):
 
 	f.write('<temperature>\n')
 	f.write(str(Tcpu) + ' degC @ '+ str(fcpu) +' MHz\n')
-  f.write('sda: '+ Tsda +' || sdb: '+ Tsdd +' || sdc: '+ Tsdc +' || sdd: '+ Tsdd +' degC'
+	f.write('sda: '+ Tsda +' || sdb: '+ Tsdd +' || sdc: '+ Tsdc +' || sdd: '+ Tsdd +' degC')
 	f.write('</temperature>\n')
 
 	f.write('<memusage>\n')
