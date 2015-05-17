@@ -59,17 +59,17 @@ def do_work():
 		device = list[line].split()[0]
 		if DEBUG:print device
 		if device == "lo":
-			loIn = list[line].split()[1]
-			loOut = list[line].split()[9]
+			loIn = int(list[line].split()[1])
+			loOut = int(list[line].split()[9])
 		if device == "eth0":
-			etIn = list[line].split()[1]
-			etOut = list[line].split()[9]
+			etIn = int(list[line].split()[1])
+			etOut = int(list[line].split()[9])
 		if device == "wlan0":
-			wlIn = list[line].split()[1]
-			wlOut = list[line].split()[9]
+			wlIn = int(list[line].split()[1])
+			wlOut = int(list[line].split()[9])
 		if device == "wlan1":
-			wlIn += list[line].split()[1]
-			wlOut += list[line].split()[9]
+			wlIn += int(list[line].split()[1])
+			wlOut += int(list[line].split()[9])
 
 	return '{0}, {1}, {2}, {3}, {4}, {5}'.format(loIn, loOut, etIn, etOut, wlIn, wlOut)
 
