@@ -122,7 +122,7 @@ def do_xml(wpath):
 
 	f.write('<temperature>\n')
 	f.write(str(Tcpu) + ' degC @ '+ str(fcpu) +' MHz\n')
-	f.write('sda: '+ Tsda +' || sdb: '+ Tsdd +' || sdc: '+ Tsdc +' || sdd: '+ Tsdd +' degC')
+	f.write('sda: '+ Tsda +' || sdb: '+ Tsdb +' || sdc: '+ Tsdc +' || sdd: '+ Tsdd +' degC')
 	f.write('</temperature>\n')
 
 	f.write('<memusage>\n')
