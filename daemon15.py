@@ -58,7 +58,7 @@ def do_report(result):
 	result = ', '.join(map(str, result))
 	flock = '/tmp/synodiagd/15.lock'
 	lock(flock)
-	f = file('/tmp/15-cnt-loglines.txt', 'a')
+	f = file('/tmp/synodiagd/15-cnt-loglines.csv', 'a')
 	f.write('{0}, {1}\n'.format(outDate, result) )
 	f.close()
 	unlock(flock)
