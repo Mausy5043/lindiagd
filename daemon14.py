@@ -80,7 +80,7 @@ def do_report(result):
 	result = ', '.join(map(str, result))
 	flock = '/tmp/synodiagd/14.lock'
 	lock(flock)
-	f = file('/tmp/14-memory.csv', 'a')
+	f = file('/tmp/synodiagd/14-memory.csv', 'a')
 	f.write('{0}, {1}\n'.format(outDate, result) )
 	f.close()
 	unlock(flock)

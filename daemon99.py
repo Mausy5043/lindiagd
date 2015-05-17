@@ -86,11 +86,12 @@ def do_mv_data(rpath):
 			if not (os.path.isfile(rpath + "/" + os.path.split(file)[1])):
 			  shutil.move(file, rpath)
 
-	for file in glob.glob(r'/tmp/*.png'):
+	for file in glob.glob(r'/tmp/synodiagd/*.csv'):
 		if DEBUG:print file
 		if os.path.isfile(clientlock):
 			if not (os.path.isfile(rpath + "/" + os.path.split(file)[1])):
-				shutil.move(file, rpath)
+			  shutil.move(file, rpath)
+
 
 	unlock(clientlock)
 	if DEBUG:print "unlocked"
