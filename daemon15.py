@@ -56,7 +56,7 @@ def do_report(result):
 	outDate = commands.getoutput("date '+%F %H:%M:%S, %s'")
 
 	result = ', '.join(map(str, result))
-	flock = '/tmp/synodiagd-15.lock'
+	flock = '/tmp/synodiagd/15.lock'
 	lock(flock)
 	f = file('/tmp/15-cnt-loglines.txt', 'a')
 	f.write('{0}, {1}\n'.format(outDate, result) )
@@ -72,7 +72,7 @@ def unlock(fname):
 		os.remove(fname)
 
 if __name__ == "__main__":
-	daemon = MyDaemon('/tmp/synodiagd-15.pid')
+	daemon = MyDaemon('/tmp/synodiagd/15.pid')
 	if len(sys.argv) == 2:
 		if 'start' == sys.argv[1]:
 			daemon.start()

@@ -73,7 +73,7 @@ def do_mv_data(rpath):
 	while (count_internal_locks > 0):
 		time.sleep(1)
 		count_internal_locks=0
-		for file in glob.glob(r'/tmp/synodiagd*.lock'):
+		for file in glob.glob(r'/tmp/synodiagd/*.lock'):
 			count_internal_locks += 1
 
 		if DEBUG:print "{0} internal locks".format(count_internal_locks)
@@ -148,7 +148,7 @@ def unlock(fname):
 		os.remove(fname)
 
 if __name__ == "__main__":
-	daemon = MyDaemon('/tmp/synodiagd-99.pid')
+	daemon = MyDaemon('/tmp/synodiagd/99.pid')
 	if len(sys.argv) == 2:
 		if 'start' == sys.argv[1]:
 			daemon.start()
