@@ -7,6 +7,7 @@
 branch=$(cat ~/.synodiagd.branch)
 clnt=$(hostname)
 cd /root/synodiagd
+PATH=$PATH:/opt/bin:/opt/sbin
 
 # force recompilation of libraries
 rm *.pyc
