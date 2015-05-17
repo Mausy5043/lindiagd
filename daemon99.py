@@ -34,8 +34,7 @@ class MyDaemon(Daemon):
 
 			if os.path.ismount(mount_path):
 				#do_mv_data(remote_path)
-				#do_xml(remote_path)
-				do_xml('/tmp')
+				do_xml(remote_path)
 
 			waitTime = sampleTime - (time.time() - startTime) - (startTime%sampleTime)
 			if (waitTime > 0):
@@ -98,7 +97,7 @@ def do_xml(wpath):
 	freeh           = commands.getoutput("free")
 	psout           = commands.getoutput("top -b -n 1 | cut -c 37- |awk 'NR>4' |sort -rnk 1 | head -10 | sed 's/&/\&amp;/g' | sed 's/>/\&gt;/g'")
 	#
-	f = file(wpath + '/status.txt', 'w')
+	f = file(wpath + '/status.xml', 'w')
 
 	f.write('<server>\n')
 
