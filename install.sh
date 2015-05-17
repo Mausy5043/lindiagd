@@ -10,4 +10,10 @@ if [ ! -e /mnt/share1 ]; then
   sudo mkdir /mnt/share1
 fi
 
+#pushd doesnt work on busybox
+cd $HOME/synodiagd
+  ./00-scriptmanager.sh
+#popd doesnt work on busybox
+cd $HOME
+
 exit 0

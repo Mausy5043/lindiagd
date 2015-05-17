@@ -11,12 +11,8 @@ cd $HOME/synodiagd
 # force recompilation of libraries
 rm *.pyc
 
-# Synchronise local copy with $branch
-git pull
-git fetch origin
-git checkout $branch
-
  # Check which code has changed
+ git fetch origin
  # git diff --name-only
  # git log --graph --oneline --date-order --decorate --color --all
 
@@ -27,6 +23,10 @@ git checkout $branch
  DIFFd15=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon15.py)
  DIFFd99=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon99.py)
 
+  # Synchronise local copy with $branch
+ git pull
+ git fetch origin
+ git checkout $branch
  git reset --hard origin/$branch && \
  git clean -f -d
 
