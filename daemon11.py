@@ -51,10 +51,10 @@ def do_work():
 	# 4 datapoints gathered here
 
 	# Harddisk temperatures
-  outHdaTemp = commands.getoutput("smartctl -A /dev/sda -d ata |grep Temperature_Celsius |awk '{print $10}'")
-  outHdbTemp = commands.getoutput("smartctl -A /dev/sdb -d ata |grep Temperature_Celsius |awk '{print $10}'")
-  outHdcTemp = commands.getoutput("smartctl -A /dev/sdc -d ata |grep Temperature_Celsius |awk '{print $10}'")
-  outHddTemp = commands.getoutput("smartctl -A /dev/sdd -d ata |grep Temperature_Celsius |awk '{print $10}'")
+	outHdaTemp = commands.getoutput("smartctl -A /dev/sda -d ata |grep Temperature_Celsius |awk '{print $10}'")
+	outHdbTemp = commands.getoutput("smartctl -A /dev/sdb -d ata |grep Temperature_Celsius |awk '{print $10}'")
+	outHdcTemp = commands.getoutput("smartctl -A /dev/sdc -d ata |grep Temperature_Celsius |awk '{print $10}'")
+	outHddTemp = commands.getoutput("smartctl -A /dev/sdd -d ata |grep Temperature_Celsius |awk '{print $10}'")
 
 	if DEBUG: print outHdaTemp, outHdbTemp, outHdcTemp, outHddTemp
 	return '{0}, {1}, {2}, {3}'.format(outHdaTemp, outHdbTemp, outHdcTemp, outHddTemp)
