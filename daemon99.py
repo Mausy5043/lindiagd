@@ -102,7 +102,7 @@ def do_xml(wpath):
 	uptime          = commands.getoutput("uptime")
 	dfh             = commands.getoutput("df")
 	freeh           = commands.getoutput("free")
-	mds							= commands.getoutput("cat /proc/mdstat |awk 'NR<2'")
+	mds							= commands.getoutput("cat /proc/mdstat |awk 'NR<4'")
 	psout           = commands.getoutput("top -b -n 1 | cut -c 37- | awk 'NR>4' | head -10 | sed 's/&/\&amp;/g' | sed 's/>/\&gt;/g'")
 	Tsda            = commands.getoutput("smartctl -A /dev/sda -d ata |grep Temperature_Celsius |awk '{print $10}'")
 	Tsdb            = commands.getoutput("smartctl -A /dev/sdb -d ata |grep Temperature_Celsius |awk '{print $10}'")
@@ -132,7 +132,7 @@ def do_xml(wpath):
 	f.write(freeh + '\n')
 	f.write('</memusage>\n')
 
-	f.write(' <uptime>\n')
+	f.write('<uptime>\n')
 	f.write(uptime + '\n')
 	f.write(uname[0]+ ' ' +uname[1]+ ' ' +uname[2]+ ' ' +uname[3]+ ' ' +uname[4]+ ' ' +platform.platform() +'\n')
 	f.write(' - synodiagd on: '+ synodiagdbranch +'\n')
