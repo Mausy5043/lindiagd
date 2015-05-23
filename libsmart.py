@@ -57,7 +57,7 @@ class SmartDisk():
 
 if __name__ == '__main__':
 
-  DEBUG = False
+  DEBUG = True
 
   sda = SmartDisk("/dev/sda")
   sda.smart()
@@ -71,9 +71,11 @@ if __name__ == '__main__':
   sdd = SmartDisk("/dev/sdd")
   sdd.smart()
   print sdd.getdata('194')
-
+  print "last test:"
   print sda.getlasttest()
+  print "info"
   print sdc.getinfo()
+  print "health"
   print sdb.gethealth
-
+  print "data 9"
   print sda.getdata('9')
