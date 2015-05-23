@@ -10,6 +10,7 @@
 
 import os, sys, shutil, glob, platform, time, commands
 from libdaemon import Daemon
+from libsmart import SmartDisk
 
 DEBUG = False
 os.nice(8)
