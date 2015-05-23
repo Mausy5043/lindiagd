@@ -57,11 +57,19 @@ class SmartDisk():
     return ret
 
   def getinfo(self):
-    ret =""
-    if DEBUG:print self.wwn
-    ret = self.wwn
+    ret=retm=retd=rets=""
+    for line in self.identity:
+      if DEBUG:print line
+      if (line != ''):
+        ls=line.split()
+        if (line.split()[0] == "Model"):
+          retm = "model"
+        if (line.split()[0] == "Device"):
+          retd = "device"
+        if (line.split()[0] == "Serial"):
+          rets = "serial"
+    ret = retm + " " + retd + " (" + rets +")"
     return ret
-
 
 if __name__ == '__main__':
 
