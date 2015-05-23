@@ -28,7 +28,7 @@ class SmartDisk():
           retd = line.split(': ')[1].strip()
         if (ls[0] == "Serial"):
           rets = line.split(': ')[1].strip()
-    self.identity = retm + " " + retd + " (" + rets +")"
+    self.identity = retm + " || " + retd + " (" + rets +")"
 
   def smart(self):
     t1 = time.time()
