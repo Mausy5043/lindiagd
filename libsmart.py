@@ -11,12 +11,12 @@ class SmartDisk():
   Usage: (under construction)
   """
   def __init__(self,diskid):
-    self.wwn = diskid
+    self.diskid = diskid
     self.vars     = "-"
     self.health   = "-"
     self.selftest = "-"
     self.info     = "-"
-    self.identity = commands.getoutput("sudo smartctl -i " + self.wwn + " |awk 'NR>4'").splitlines()
+    self.identity = commands.getoutput("sudo smartctl -i " + self.diskid + " |awk 'NR>4'").splitlines()
     self.lasttime = -1
 
   def smart(self):
@@ -24,10 +24,10 @@ class SmartDisk():
     # only read the S.M.A.R.T. data if current data is stale
     # data is considered stale if it is older than 4 minutes
     if ((t1 - self.lasttime) > (4*60)):
-      self.vars     = commands.getoutput("sudo smartctl -A " + self.wwn + " |awk 'NR>4'").splitlines()
-      self.info     = commands.getoutput("sudo smartctl -i " + self.wwn + " |awk 'NR>4'").splitlines()
-      self.health   = commands.getoutput("sudo smartctl -H " + self.wwn + " |awk 'NR>4'").splitlines()
-      self.selftest = commands.getoutput("sudo smartctl -l selftest " + self.wwn + "  |grep '\# 1'")
+      self.vars     = commands.getoutput("sudo smartctl -A " + self.diskid + " |awk 'NR>4'").splitlines()
+      self.info     = commands.getoutput("sudo smartctl -i " + self.diskid + " |awk 'NR>4'").splitlines()
+      self.health   = commands.getoutput("sudo smartctl -H " + self.diskid + " |awk 'NR>4'").splitlines()
+      self.selftest = commands.getoutput("sudo smartctl -l selftest " + self.diskid + "  |grep '\# 1'")
       self.lasttime = t1
     else:
       if DEBUG:print "Using old data: "
@@ -75,14 +75,17 @@ if __name__ == '__main__':
 
   DEBUG = True
 
-  sdd = SmartDisk("/dev/sdd -d ata")
-  sdd.smart()
-  print sdd.getdata('194')
+  # initialise a device
+  sda = SmartDisk("/dev/sda -d ata")
+  # request reading smart info from device
+  sda.smart()
+  # extract data with id=194
+  print sda.getdata('194')
   print "last test:"
-  print sdd.getlasttest()
-  print "wwn"
-  print sdd.getinfo()
+  print sda.getlasttest()
+  print "diskid"
+  print sda.getinfo()
   print "health"
-  print sdd.gethealth()
+  print sda.gethealth()
   print "data 9"
-  print sdd.getdata('9')
+  print sda.getdata('9')
