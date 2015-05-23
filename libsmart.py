@@ -75,6 +75,6 @@ if __name__ == '__main__':
   print "wwn"
   print sdd.getinfo()
   print "health"
-  print sdd.gethealth
+  print sdd.gethealth()
   print "data 9"
   print sdd.getdata('9')
