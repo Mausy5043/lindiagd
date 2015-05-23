@@ -35,6 +35,7 @@ class SmartDisk():
     return 0
 
   def getdata(self,id):
+    ret = ""
     for line in self.vars:
       if (line != ''):
         ls=line.split()
