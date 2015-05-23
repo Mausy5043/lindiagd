@@ -15,9 +15,20 @@ class SmartDisk():
     self.vars     = "-"
     self.health   = "-"
     self.selftest = "-"
-    self.info     = "-"
-    self.identity = commands.getoutput("sudo smartctl -i " + self.diskid + " |awk 'NR>4'").splitlines()
     self.lasttime = -1
+    self.identity = commands.getoutput("sudo smartctl -i " + self.diskid + " |awk 'NR>4'").splitlines()
+    retm=retd=rets=""
+    for line in self.identity:
+      if DEBUG:print line
+      if (line != ''):
+        ls=line.split()
+        if (ls[0] == "Model"):
+          retm = line.split(': ')[1].strip()
+        if (ls[0] == "Device") and (ls[1] == "Model:"):
+          retd = line.split(': ')[1].strip()
+        if (ls[0] == "Serial"):
+          rets = line.split(': ')[1].strip()
+    self.identity = retm + " " + retd + " (" + rets +")"
 
   def smart(self):
     t1 = time.time()
@@ -25,7 +36,7 @@ class SmartDisk():
     # data is considered stale if it is older than 4 minutes
     if ((t1 - self.lasttime) > (4*60)):
       self.vars     = commands.getoutput("sudo smartctl -A " + self.diskid + " |awk 'NR>4'").splitlines()
-      self.info     = commands.getoutput("sudo smartctl -i " + self.diskid + " |awk 'NR>4'").splitlines()
+      #self.info     = commands.getoutput("sudo smartctl -i " + self.diskid + " |awk 'NR>4'").splitlines()
       self.health   = commands.getoutput("sudo smartctl -H " + self.diskid + " |awk 'NR>4'").splitlines()
       self.selftest = commands.getoutput("sudo smartctl -l selftest " + self.diskid + "  |grep '\# 1'")
       self.lasttime = t1
@@ -57,19 +68,7 @@ class SmartDisk():
     return ret
 
   def getinfo(self):
-    ret=retm=retd=rets=""
-    for line in self.identity:
-      if DEBUG:print line
-      if (line != ''):
-        ls=line.split()
-        if (ls[0] == "Model"):
-          retm = line.split(': ')[1].strip()
-        if (ls[0] == "Device") and (ls[1] == "Model:"):
-          retd = line.split(': ')[1].strip()
-        if (ls[0] == "Serial"):
-          rets = line.split(': ')[1].strip()
-    ret = retm + " " + retd + " (" + rets +")"
-    return ret
+    return self.identity
 
 if __name__ == '__main__':
 
