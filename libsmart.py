@@ -67,23 +67,14 @@ if __name__ == '__main__':
 
   DEBUG = True
 
-  sda = SmartDisk("/dev/sda -d ata")
-  sda.smart()
-  print sda.getdata('194')
-  sdb = SmartDisk("/dev/sdb -d ata")
-  sdb.smart()
-  print sdb.getdata('194')
-  sdc = SmartDisk("/dev/sdc -d ata")
-  sdc.smart()
-  print sdc.getdata('194')
   sdd = SmartDisk("/dev/sdd -d ata")
   sdd.smart()
   print sdd.getdata('194')
   print "last test:"
-  print sda.getlasttest()
-  print "info"
-  print sdc.getinfo()
+  print sdd.getlasttest()
+  print "wwn"
+  print sdd.getinfo()
   print "health"
-  print sdb.gethealth
+  print sdd.gethealth
   print "data 9"
-  print sda.getdata('9')
+  print sdd.getdata('9')
