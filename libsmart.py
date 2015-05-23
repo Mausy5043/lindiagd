@@ -47,7 +47,7 @@ class SmartDisk():
   def gethealth(self):
     ret =""
     if DEBUG:print self.health
-    ret = self.health
+    ret = self.health[0]
     return ret
 
   def getlasttest(self):
