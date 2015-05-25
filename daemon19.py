@@ -63,10 +63,9 @@ def do_report(result):
 	# Get the time and date in human-readable form and UN*X-epoch...
 	outDate = commands.getoutput("date '+%F %H:%M:%S, %s'")
 	result = ', '.join(map(str, result))
-	flock = '/tmp/synodiagd/11.lock'
+	flock = '/tmp/synodiagd/19.lock'
 	lock(flock)
-	# beware: server expects `15-tempdisk.csv`  not `11-tempdisk.csv`!
-	f = file('/tmp/synodiagd/15-tempdisk.csv', 'a')
+	f = file('/tmp/synodiagd/19-tempdisk.csv', 'a')
 	f.write('{0}, {1}\n'.format(outDate, result) )
 	f.close()
 	unlock(flock)
@@ -80,7 +79,7 @@ def unlock(fname):
 		os.remove(fname)
 
 if __name__ == "__main__":
-	daemon = MyDaemon('/tmp/synodiagd/11.pid')
+	daemon = MyDaemon('/tmp/synodiagd/19.pid')
 	if len(sys.argv) == 2:
 		if 'start' == sys.argv[1]:
 			daemon.start()
