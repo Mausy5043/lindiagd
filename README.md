@@ -13,9 +13,9 @@ and modified for my particular use-case. This includes a couple of bash-scripts 
 NO code is provided for further processing of the data. E.g. adding the data to rrdtool-databases and/or graphing the data. This functionality is offered elsewhere.
 
 Following daemons are provided:
-- daemon11 - Temperature of the disk-array in degC.
 - daemon12 - CPU load (by `/proc/loadavg` and `dstat`; requires `dstat` installed by e.g. `ipkg`)
 - daemon13 - Network interfaces (bytes in/out by `/proc/net/dev`)
 - daemon14 - Memory usage (by `/proc/meminfo`)
 - daemon15 - Size of logfiles (`kern.log`, `messages` and `syslog.log`)
+- daemon19 - Temperature of the disk-array in degC
 - daemon99 - Data uploading to the server
