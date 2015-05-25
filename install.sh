@@ -7,7 +7,7 @@ echo master > $HOME/.synodiagd.branch
 
 if [ ! -e /mnt/share1 ]; then
   echo "Creating mountpoint..."
-  sudo mkdir /mnt/share1
+  mkdir /mnt/share1
 fi
 
 #pushd doesnt work on busybox

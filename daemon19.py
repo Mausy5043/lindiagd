@@ -15,10 +15,10 @@ from libsmart import SmartDisk
 # BEWARE
 # The disks identified here as `sda`, `sdb` etc. may not necessarily
 # be called `/dev/sda`, `/dev/sdb` etc. on the system!!
-sda = SmartDisk("/dev/sda -d ata")
-sdb = SmartDisk("/dev/sdb -d ata")
-sdc = SmartDisk("/dev/sdc -d ata")
-sdd = SmartDisk("/dev/sdd -d ata")
+sda = SmartDisk("/dev/sda -d ata",0)
+sdb = SmartDisk("/dev/sdb -d ata",0)
+sdc = SmartDisk("/dev/sdc -d ata",0)
+sdd = SmartDisk("/dev/sdd -d ata",0)
 
 DEBUG = False
 

@@ -10,13 +10,15 @@ class SmartDisk():
 
   Usage: (under construction)
   """
-  def __init__(self,diskid):
+  def __init__(self,diskid,sudo):
+    self.sudo=""
+    if sudo == 1:self.sudo="sudo "
     self.diskid = diskid
     self.vars     = "-"
     self.health   = "-"
     self.selftest = "-"
     self.lasttime = -1
-    self.identity = commands.getoutput("sudo smartctl -i " + self.diskid + " |awk 'NR>4'").splitlines()
+    self.identity = commands.getoutput(self.sudo + "smartctl -i " + self.diskid + " |awk 'NR>4'").splitlines()
     retm=retd=rets=""
     for line in self.identity:
       if DEBUG:print line
@@ -35,10 +37,10 @@ class SmartDisk():
     # only read the S.M.A.R.T. data if current data is stale
     # data is considered stale if it is older than 4 minutes
     if ((t1 - self.lasttime) > (4*60)):
-      self.vars     = commands.getoutput("sudo smartctl -A " + self.diskid + " |awk 'NR>4'").splitlines()
-      #self.info     = commands.getoutput("sudo smartctl -i " + self.diskid + " |awk 'NR>4'").splitlines()
-      self.health   = commands.getoutput("sudo smartctl -H " + self.diskid + " |awk 'NR>4'").splitlines()
-      self.selftest = commands.getoutput("sudo smartctl -l selftest " + self.diskid + "  |grep '\# 1'")
+      self.vars     = commands.getoutput(self.sudo + "smartctl -A " + self.diskid + " |awk 'NR>4'").splitlines()
+      #self.info     = commands.getoutput(self.sudo + "smartctl -i " + self.diskid + " |awk 'NR>4'").splitlines()
+      self.health   = commands.getoutput(self.sudo + "smartctl -H " + self.diskid + " |awk 'NR>4'").splitlines()
+      self.selftest = commands.getoutput(self.sudo + "smartctl -l selftest " + self.diskid + "  |grep '\# 1'")
       self.lasttime = t1
     else:
       if DEBUG:print "Using old data: "
