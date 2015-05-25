@@ -6,7 +6,7 @@
 
 # Adapted by M.Hendrix [2015]
 
-# daemon11.py measures the temperature of the diskarray.
+# daemon19.py measures the temperature of the diskarray.
 
 import os, sys, time, math, commands
 from libdaemon import Daemon

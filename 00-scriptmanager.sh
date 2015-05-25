@@ -16,13 +16,14 @@ PATH=$PATH:/opt/bin:/opt/sbin
 
  DIFFlibd=$(git --no-pager diff --name-only $branch..origin/$branch -- ./libdaemon.py)
  DIFFlibs=$(git --no-pager diff --name-only $branch..origin/$branch -- ./libsmart.py)
- DIFFd11=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon11.py)
  DIFFd12=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon12.py)
  DIFFd13=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon13.py)
  DIFFd14=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon14.py)
  DIFFd15=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon15.py)
+ DIFFd19=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon19.py)
  DIFFd99=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon99.py)
 
+ ./daemon11.py stop
   # Synchronise local copy with $branch
  git pull
  git fetch origin
@@ -40,10 +41,6 @@ fi
 
 ######## Stop daemons ######
 
-if [[ -n "$DIFFd11" ]]; then
-  logger -t synodiagd "Source daemon11 has changed."
-  ./daemon11.py stop
-fi
 if [[ -n "$DIFFd12" ]]; then
   logger -t synodiagd "Source daemon12 has changed."
   ./daemon12.py stop
@@ -60,6 +57,10 @@ if [[ -n "$DIFFd15" ]]; then
   logger -t synodiagd "Source daemon15 has changed."
   ./daemon15.py stop
 fi
+if [[ -n "$DIFFd19" ]]; then
+  logger -t synodiagd "Source daemon19 has changed."
+  ./daemon19.py stop
+fi
 if [[ -n "$DIFFd99" ]]; then
   logger -t synodiagd "Source daemon99 has changed."
   ./daemon99.py stop
@@ -69,11 +70,11 @@ if [[ -n "$DIFFlibd" ]]; then
   logger -t synodiagd "Source libdaemon has changed."
   rm ./libdaemon.pyc
   # stop all daemons
-  ./daemon11.py stop
   ./daemon12.py stop
   ./daemon13.py stop
   ./daemon14.py stop
   ./daemon15.py stop
+  ./daemon19.py stop
   ./daemon99.py stop
 fi
 
@@ -98,11 +99,11 @@ destale () {
   fi
 }
 
-destale 11
 destale 12
 destale 13
 destale 14
 destale 15
+destale 19
 destale 99
 
 #popd
