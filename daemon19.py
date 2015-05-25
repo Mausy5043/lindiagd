@@ -58,7 +58,11 @@ class MyDaemon(Daemon):
 
 def do_work():
 	# 4 datapoints gathered here
-
+	#
+	sda.smart()
+	sdb.smart()
+	sdc.smart()
+	sdd.smart()
 	# disktemperature
 	Tsda=sda.getdata('194')
 	Tsdb=sdb.getdata('194')
