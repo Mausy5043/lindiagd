@@ -10,6 +10,15 @@
 
 import os, sys, time, math, commands
 from libdaemon import Daemon
+from libsmart import SmartDisk
+
+# BEWARE
+# The disks identified here as `sda`, `sdb` etc. may not necessarily
+# be called `/dev/sda`, `/dev/sdb` etc. on the system!!
+sda = SmartDisk("/dev/sda -d ata")
+sdb = SmartDisk("/dev/sdb -d ata")
+sdc = SmartDisk("/dev/sdc -d ata")
+sdd = SmartDisk("/dev/sdd -d ata")
 
 DEBUG = False
 
@@ -50,14 +59,14 @@ class MyDaemon(Daemon):
 def do_work():
 	# 4 datapoints gathered here
 
-	# Harddisk temperatures
-	outHdaTemp = commands.getoutput("smartctl -A /dev/sda -d ata |grep Temperature_Celsius |awk '{print $10}'")
-	outHdbTemp = commands.getoutput("smartctl -A /dev/sdb -d ata |grep Temperature_Celsius |awk '{print $10}'")
-	outHdcTemp = commands.getoutput("smartctl -A /dev/sdc -d ata |grep Temperature_Celsius |awk '{print $10}'")
-	outHddTemp = commands.getoutput("smartctl -A /dev/sdd -d ata |grep Temperature_Celsius |awk '{print $10}'")
+	# disktemperature
+	Tsda=sda.getdata('194')
+	Tsdb=sdb.getdata('194')
+	Tsdc=sdc.getdata('194')
+	Tsdd=sdd.getdata('194')
 
-	if DEBUG: print outHdaTemp, outHdbTemp, outHdcTemp, outHddTemp
-	return '{0}, {1}, {2}, {3}'.format(outHdaTemp, outHdbTemp, outHdcTemp, outHddTemp)
+	if DEBUG: print Tsda, Tsdb, Tsdc, Tsdd
+	return '{0}, {1}, {2}, {3}'.format(Tsda, Tsdb, Tsdc, Tsdd)
 
 def do_report(result):
 	# Get the time and date in human-readable form and UN*X-epoch...
