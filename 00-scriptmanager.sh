@@ -23,7 +23,6 @@ PATH=$PATH:/opt/bin:/opt/sbin
  DIFFd19=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon19.py)
  DIFFd99=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon99.py)
 
- ./daemon11.py stop
   # Synchronise local copy with $branch
  git pull
  git fetch origin
