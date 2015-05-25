@@ -12,7 +12,7 @@ class SmartDisk():
   """
   def __init__(self,diskid,sudo):
     self.sudo=""
-    if sudo == 1:self.sudo="sudo "
+    if (sudo == 1):self.sudo="sudo "
     self.diskid = diskid
     self.vars     = "-"
     self.health   = "-"
