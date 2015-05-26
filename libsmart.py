@@ -35,8 +35,8 @@ class SmartDisk():
   def smart(self):
     t1 = time.time()
     # only read the S.M.A.R.T. data if current data is stale
-    # data is considered stale if it is older than 4 minutes
-    if ((t1 - self.lasttime) > (4*60)):
+    # data is considered stale if it is older than 4.5 minutes
+    if ((t1 - self.lasttime) > (4.5*60)):
       self.vars     = commands.getoutput(self.sudo + "smartctl -A " + self.diskid + " |awk 'NR>4'").splitlines()
       #self.info     = commands.getoutput(self.sudo + "smartctl -i " + self.diskid + " |awk 'NR>4'").splitlines()
       self.health   = commands.getoutput(self.sudo + "smartctl -H " + self.diskid + " |awk 'NR>4'").splitlines()
