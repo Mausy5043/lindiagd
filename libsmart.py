@@ -38,7 +38,6 @@ class SmartDisk():
     # data is considered stale if it is older than 4.5 minutes
     if ((t1 - self.lasttime) > (4.5*60)):
       self.vars     = commands.getoutput(self.sudo + "smartctl -A " + self.diskid + " |awk 'NR>4'").splitlines()
-      #self.info     = commands.getoutput(self.sudo + "smartctl -i " + self.diskid + " |awk 'NR>4'").splitlines()
       self.health   = commands.getoutput(self.sudo + "smartctl -H " + self.diskid + " |awk 'NR>4'").splitlines()
       self.selftest = commands.getoutput(self.sudo + "smartctl -l selftest " + self.diskid + "  |grep '\# 1'")
       self.lasttime = t1
