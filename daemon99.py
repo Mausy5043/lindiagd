@@ -176,27 +176,43 @@ def do_xml(wpath):
 	f.write('---disk1---\n')
 	f.write(' Name      : ' + Infoa + '\n')
 	f.write(' PowerOn   : ' + Pta + '\n')
-	f.write(' Last test : ' + Testa +'\n')
-	f.write('              Retired Block Count (5) = ' + RBCsda + ' - Offline Uncorrectable (198) = ' + OUsda +'\n')
-	f.write('             ' + Hda +'\n')
+  if not "without" in Testa:
+		f.write(' Last test : ' + Testa +'\n')
+  if not "PASSED" in Hda:
+		f.write('             ' + Hda +'\n')
+  if not(RBCsda=="0"):
+    if not(OUsda=="0"):
+			f.write('              Retired Block Count (5) = ' + RBCsda + ' - Offline Uncorrectable (198) = ' + OUsda +'\n')
 	f.write('---disk2---\n')
 	f.write(' Name      : ' + Infob + '\n')
 	f.write(' PowerOn   : ' + Ptb + '\n')
-	f.write(' Last test : ' + Testb +'\n')
-	f.write('              Retired Block Count (5) = ' + RBCsdb + ' - Offline Uncorrectable (198) = ' + OUsdb +'\n')
-	f.write('             ' + Hdb +'\n')
+  if not "without" in Testb:
+		f.write(' Last test : ' + Testb +'\n')
+  if not "PASSED" in Hdb:
+		f.write('             ' + Hdb +'\n')
+  if not(RBCsdb=="0"):
+    if not(OUsdb=="0"):
+			f.write('              Retired Block Count (5) = ' + RBCsdb + ' - Offline Uncorrectable (198) = ' + OUsdb +'\n')
 	f.write('---disk3---\n')
 	f.write(' Name      : ' + Infoc + '\n')
 	f.write(' PowerOn   : ' + Ptc + '\n')
-	f.write(' Last test : ' + Testc +'\n')
-	f.write('              Retired Block Count (5) = ' + RBCsdc + ' - Offline Uncorrectable (198) = ' + OUsdc +'\n')
-	f.write('             ' + Hdc +'\n')
+  if not "without" in Testc:
+		f.write(' Last test : ' + Testc +'\n')
+  if not "PASSED" in Hdc:
+		f.write('             ' + Hdc +'\n')
+  if not(RBCsdc=="0"):
+    if not(OUsdc=="0"):
+			f.write('              Retired Block Count (5) = ' + RBCsdc + ' - Offline Uncorrectable (198) = ' + OUsdc +'\n')
 	f.write('---disk4---\n')
 	f.write(' Name      : ' + Infod + '\n')
 	f.write(' PowerOn   : ' + Ptd + '\n')
-	f.write(' Last test : ' + Testd +'\n')
-	f.write('              Retired Block Count (5) = ' + RBCsdd + ' - Offline Uncorrectable (198) = ' + OUsdd +'\n')
-	f.write('             ' + Hdd +'\n')
+  if not "without" in Testd:
+		f.write(' Last test : ' + Testd +'\n')
+  if not "PASSED" in Hdd:
+		f.write('             ' + Hdd +'\n')
+  if not(RBCsdd=="0"):
+    if not(OUsdd=="0"):
+			f.write('              Retired Block Count (5) = ' + RBCsdd + ' - Offline Uncorrectable (198) = ' + OUsdd +'\n')
 	f.write(' ')
 	f.write('</temperature>\n')
 
