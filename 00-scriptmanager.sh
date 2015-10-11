@@ -114,10 +114,10 @@ destale 99
 MOUNTPOINT=/mnt/share1
 MOUNTDRIVE=10.0.1.220:/srv/array1/dataspool
 if grep -qs $MOUNTPOINT /proc/mounts; then
-	# It's mounted.
+  # It's mounted.
   echo "mounted"
 else
-	# Mount the share containing the data
+  # Mount the share containing the data
   echo "Mounting $MOUNTDRIVE on $MOUNTPOINT"
-	mount $MOUNTDRIVE $MOUNTPOINT
+  mount $MOUNTDRIVE $MOUNTPOINT
 fi

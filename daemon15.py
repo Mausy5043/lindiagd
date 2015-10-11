@@ -15,80 +15,80 @@ from libdaemon import Daemon
 DEBUG = False
 
 class MyDaemon(Daemon):
-	def run(self):
-		sampleptr = 0
-		samples = 1
-		datapoints = 3
+  def run(self):
+    sampleptr = 0
+    samples = 1
+    datapoints = 3
 
-		sampleTime = 60
-		cycleTime = samples * sampleTime
-		# sync to whole minute
-		waitTime = (cycleTime + sampleTime) - (time.time() % cycleTime)
-		if DEBUG:print "Waiting {0} s".format(int(waitTime))
-		time.sleep(waitTime)
-		while True:
-			startTime = time.time()
+    sampleTime = 60
+    cycleTime = samples * sampleTime
+    # sync to whole minute
+    waitTime = (cycleTime + sampleTime) - (time.time() % cycleTime)
+    if DEBUG:print "Waiting {0} s".format(int(waitTime))
+    time.sleep(waitTime)
+    while True:
+      startTime = time.time()
 
-			result = do_work().split(',')
-			data = map(int, result)
+      result = do_work().split(',')
+      data = map(int, result)
 
-			sampleptr = sampleptr + 1
-			if (sampleptr == samples):
-				do_report(data)
-				sampleptr = 0
+      sampleptr = sampleptr + 1
+      if (sampleptr == samples):
+        do_report(data)
+        sampleptr = 0
 
-			waitTime = sampleTime - (time.time() - startTime) - (startTime%sampleTime)
-			if (waitTime > 0):
-				if DEBUG:print "Waiting {0} s".format(int(waitTime))
-				time.sleep(waitTime)
+      waitTime = sampleTime - (time.time() - startTime) - (startTime%sampleTime)
+      if (waitTime > 0):
+        if DEBUG:print "Waiting {0} s".format(int(waitTime))
+        time.sleep(waitTime)
 
 def do_work():
-	# 3 datapoints gathered here
-	kernlog = commands.getoutput("wc -l /var/log/kern.log").split()[0]
-	messlog = commands.getoutput("wc -l /var/log/messages").split()[0]
-	syslog  = commands.getoutput("wc -l /var/log/syslog.log").split()[0]
-	if DEBUG:print kernlog, messlog, syslog
+  # 3 datapoints gathered here
+  kernlog = commands.getoutput("wc -l /var/log/kern.log").split()[0]
+  messlog = commands.getoutput("wc -l /var/log/messages").split()[0]
+  syslog  = commands.getoutput("wc -l /var/log/syslog.log").split()[0]
+  if DEBUG:print kernlog, messlog, syslog
 
-	return '{0}, {1}, {2}'.format(kernlog, messlog, syslog)
+  return '{0}, {1}, {2}'.format(kernlog, messlog, syslog)
 
 def do_report(result):
-	# Get the time and date in human-readable form and UN*X-epoch...
-	outDate = commands.getoutput("date '+%F %H:%M:%S, %s'")
+  # Get the time and date in human-readable form and UN*X-epoch...
+  outDate = commands.getoutput("date '+%F %H:%M:%S, %s'")
 
-	result = ', '.join(map(str, result))
-	flock = '/tmp/synodiagd/15.lock'
-	lock(flock)
-	f = file('/tmp/synodiagd/15-cnt-loglines.csv', 'a')
-	f.write('{0}, {1}\n'.format(outDate, result) )
-	f.close()
-	unlock(flock)
-	return
+  result = ', '.join(map(str, result))
+  flock = '/tmp/synodiagd/15.lock'
+  lock(flock)
+  f = file('/tmp/synodiagd/15-cnt-loglines.csv', 'a')
+  f.write('{0}, {1}\n'.format(outDate, result) )
+  f.close()
+  unlock(flock)
+  return
 
 def lock(fname):
-	open(fname, 'a').close()
+  open(fname, 'a').close()
 
 def unlock(fname):
-	if os.path.isfile(fname):
-		os.remove(fname)
+  if os.path.isfile(fname):
+    os.remove(fname)
 
 if __name__ == "__main__":
-	daemon = MyDaemon('/tmp/synodiagd/15.pid')
-	if len(sys.argv) == 2:
-		if 'start' == sys.argv[1]:
-			daemon.start()
-		elif 'stop' == sys.argv[1]:
-			daemon.stop()
-		elif 'restart' == sys.argv[1]:
-			daemon.restart()
-		elif 'foreground' == sys.argv[1]:
-			# assist with debugging.
-			print "Debug-mode started. Use <Ctrl>+C to stop."
-			DEBUG = True
-			daemon.run()
-		else:
-			print "Unknown command"
-			sys.exit(2)
-		sys.exit(0)
-	else:
-		print "usage: %s start|stop|restart|foreground" % sys.argv[0]
-		sys.exit(2)
+  daemon = MyDaemon('/tmp/synodiagd/15.pid')
+  if len(sys.argv) == 2:
+    if 'start' == sys.argv[1]:
+      daemon.start()
+    elif 'stop' == sys.argv[1]:
+      daemon.stop()
+    elif 'restart' == sys.argv[1]:
+      daemon.restart()
+    elif 'foreground' == sys.argv[1]:
+      # assist with debugging.
+      print "Debug-mode started. Use <Ctrl>+C to stop."
+      DEBUG = True
+      daemon.run()
+    else:
+      print "Unknown command"
+      sys.exit(2)
+    sys.exit(0)
+  else:
+    print "usage: %s start|stop|restart|foreground" % sys.argv[0]
+    sys.exit(2)

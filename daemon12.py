@@ -14,95 +14,95 @@ from libdaemon import Daemon
 DEBUG = False
 
 class MyDaemon(Daemon):
-	def run(self):
-		sampleptr = 0
-		samples = 5
-		datapoints = 11
-		data = [[None]*datapoints for _ in range(samples)]
+  def run(self):
+    sampleptr = 0
+    samples = 5
+    datapoints = 11
+    data = [[None]*datapoints for _ in range(samples)]
 
-		sampleTime = 12
-		cycleTime = samples * sampleTime
-		# sync to whole minute
-		waitTime = (cycleTime + sampleTime) - (time.time() % cycleTime)
-		if DEBUG:print "Waiting {0} s".format(int(waitTime))
-		time.sleep(waitTime)
-		while True:
-			startTime = time.time()
+    sampleTime = 12
+    cycleTime = samples * sampleTime
+    # sync to whole minute
+    waitTime = (cycleTime + sampleTime) - (time.time() % cycleTime)
+    if DEBUG:print "Waiting {0} s".format(int(waitTime))
+    time.sleep(waitTime)
+    while True:
+      startTime = time.time()
 
-			result = do_work().split(',')
-			if DEBUG: print result
+      result = do_work().split(',')
+      if DEBUG: print result
 
-			data[sampleptr] = map(float, result)
-			# report sample average
-			sampleptr = sampleptr + 1
-			if (sampleptr == samples):
-				somma = map(sum,zip(*data))
-				# not all entries should be float
-				# 0.37, 0.18, 0.17, 4, 143, 32147, 3, 4, 93, 0, 0
-				averages = [format(s / samples, '.3f') for s in somma]
-				averages[3]=int(data[sampleptr-1][3])
-				averages[4]=int(data[sampleptr-1][4])
-				averages[5]=int(data[sampleptr-1][5])
-				do_report(averages)
-				sampleptr = 0
+      data[sampleptr] = map(float, result)
+      # report sample average
+      sampleptr = sampleptr + 1
+      if (sampleptr == samples):
+        somma = map(sum,zip(*data))
+        # not all entries should be float
+        # 0.37, 0.18, 0.17, 4, 143, 32147, 3, 4, 93, 0, 0
+        averages = [format(s / samples, '.3f') for s in somma]
+        averages[3]=int(data[sampleptr-1][3])
+        averages[4]=int(data[sampleptr-1][4])
+        averages[5]=int(data[sampleptr-1][5])
+        do_report(averages)
+        sampleptr = 0
 
-			waitTime = sampleTime - (time.time() - startTime) - (startTime%sampleTime)
-			if (waitTime > 0):
-				if DEBUG:print "Waiting {0} s".format(int(waitTime))
-				time.sleep(waitTime)
+      waitTime = sampleTime - (time.time() - startTime) - (startTime%sampleTime)
+      if (waitTime > 0):
+        if DEBUG:print "Waiting {0} s".format(int(waitTime))
+        time.sleep(waitTime)
 
 def do_work():
-	# 6 datapoints gathered here
-	outHistLoad = commands.getoutput("cat /proc/loadavg").replace(" ",", ").replace("/",", ")
-	if DEBUG:print outHistLoad
+  # 6 datapoints gathered here
+  outHistLoad = commands.getoutput("cat /proc/loadavg").replace(" ",", ").replace("/",", ")
+  if DEBUG:print outHistLoad
 
-	# 5 datapoints gathered here
-	outCpu = commands.getoutput("dstat 1 2").splitlines()[3].split()
-	outCpuUS = outCpu[0]
-	outCpuSY = outCpu[1]
-	outCpuID = outCpu[2]
-	outCpuWA = outCpu[3]
-	outCpuST = 0
-	if DEBUG: print outHistLoad, outCpuUS, outCpuSY, outCpuID, outCpuWA, outCpuST
-	return '{0}, {1}, {2}, {3}, {4}, {5}'.format(outHistLoad, outCpuUS, outCpuSY, outCpuID, outCpuWA, outCpuST)
+  # 5 datapoints gathered here
+  outCpu = commands.getoutput("dstat 1 2").splitlines()[3].split()
+  outCpuUS = outCpu[0]
+  outCpuSY = outCpu[1]
+  outCpuID = outCpu[2]
+  outCpuWA = outCpu[3]
+  outCpuST = 0
+  if DEBUG: print outHistLoad, outCpuUS, outCpuSY, outCpuID, outCpuWA, outCpuST
+  return '{0}, {1}, {2}, {3}, {4}, {5}'.format(outHistLoad, outCpuUS, outCpuSY, outCpuID, outCpuWA, outCpuST)
 
 def do_report(result):
-	# Get the time and date in human-readable form and UN*X-epoch...
-	outDate = commands.getoutput("date '+%F %H:%M:%S, %s'")
-	result = ', '.join(map(str, result))
-	flock = '/tmp/synodiagd/12.lock'
-	lock(flock)
-	f = file('/tmp/synodiagd/12-load-cpu.csv', 'a')
-	f.write('{0}, {1}\n'.format(outDate, result) )
-	f.close()
-	unlock(flock)
-	return
+  # Get the time and date in human-readable form and UN*X-epoch...
+  outDate = commands.getoutput("date '+%F %H:%M:%S, %s'")
+  result = ', '.join(map(str, result))
+  flock = '/tmp/synodiagd/12.lock'
+  lock(flock)
+  f = file('/tmp/synodiagd/12-load-cpu.csv', 'a')
+  f.write('{0}, {1}\n'.format(outDate, result) )
+  f.close()
+  unlock(flock)
+  return
 
 def lock(fname):
-	open(fname, 'a').close()
+  open(fname, 'a').close()
 
 def unlock(fname):
-	if os.path.isfile(fname):
-		os.remove(fname)
+  if os.path.isfile(fname):
+    os.remove(fname)
 
 if __name__ == "__main__":
-	daemon = MyDaemon('/tmp/synodiagd/12.pid')
-	if len(sys.argv) == 2:
-		if 'start' == sys.argv[1]:
-			daemon.start()
-		elif 'stop' == sys.argv[1]:
-			daemon.stop()
-		elif 'restart' == sys.argv[1]:
-			daemon.restart()
-		elif 'foreground' == sys.argv[1]:
-			# assist with debugging.
-			print "Debug-mode started. Use <Ctrl>+C to stop."
-			DEBUG = True
-			daemon.run()
-		else:
-			print "Unknown command"
-			sys.exit(2)
-		sys.exit(0)
-	else:
-		print "usage: %s start|stop|restart|foreground" % sys.argv[0]
-		sys.exit(2)
+  daemon = MyDaemon('/tmp/synodiagd/12.pid')
+  if len(sys.argv) == 2:
+    if 'start' == sys.argv[1]:
+      daemon.start()
+    elif 'stop' == sys.argv[1]:
+      daemon.stop()
+    elif 'restart' == sys.argv[1]:
+      daemon.restart()
+    elif 'foreground' == sys.argv[1]:
+      # assist with debugging.
+      print "Debug-mode started. Use <Ctrl>+C to stop."
+      DEBUG = True
+      daemon.run()
+    else:
+      print "Unknown command"
+      sys.exit(2)
+    sys.exit(0)
+  else:
+    print "usage: %s start|stop|restart|foreground" % sys.argv[0]
+    sys.exit(2)
