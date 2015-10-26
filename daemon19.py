@@ -7,6 +7,7 @@
 # Adapted by M.Hendrix [2015]
 
 # daemon19.py measures the temperature of the diskarray.
+# uses moving averages
 
 import os, sys, time, math, commands
 from libdaemon import Daemon
@@ -25,9 +26,12 @@ DEBUG = False
 class MyDaemon(Daemon):
   def run(self):
     sampleptr = 0
-    samples = 1
+    cycles = 3
+    SamplesPerCycle = 5
+    samples = SamplesPerCycle * cycles
+
     datapoints = 4
-    data = [[None]*datapoints for _ in range(samples)]
+    data = []
 
     sampleTime = 5*60
     cycleTime = samples * sampleTime
@@ -41,15 +45,18 @@ class MyDaemon(Daemon):
       result = do_work().split(',')
       if DEBUG: print result
 
-      data[sampleptr] = map(float, result)
-      # report sample average
+      data.append(map(float, result))
+      if (len(data) > samples):data.pop(0)
       sampleptr = sampleptr + 1
-      if (sampleptr == samples):
+
+      # report sample average
+      if (sampleptr % SamplesPerCycle == 0):
         somma = map(sum,zip(*data))
-        averages = [format(s / samples, '.3f') for s in somma]
+        averages = [format(s / len(data), '.3f') for s in somma]
         if DEBUG:print averages
         do_report(averages)
-        sampleptr = 0
+        if (sampleptr == samples):
+          sampleptr = 0
 
       waitTime = sampleTime - (time.time() - startTime) - (startTime%sampleTime)
       if (waitTime > 0):
