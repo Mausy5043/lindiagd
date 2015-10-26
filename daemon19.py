@@ -26,14 +26,14 @@ DEBUG = False
 class MyDaemon(Daemon):
   def run(self):
     sampleptr = 0
-    cycles = 5
+    cycles = 1
     SamplesPerCycle = 1
     samples = SamplesPerCycle * cycles
 
     datapoints = 4
     data = []
 
-    sampleTime = 60
+    sampleTime = 5*60
     cycleTime = samples * sampleTime
     # sync to whole minute
     waitTime = (cycleTime + sampleTime) - (time.time() % cycleTime)
