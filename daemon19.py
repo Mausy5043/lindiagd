@@ -27,13 +27,13 @@ class MyDaemon(Daemon):
   def run(self):
     sampleptr = 0
     cycles = 6
-    SamplesPerCycle = 1
+    SamplesPerCycle = 5
     samples = SamplesPerCycle * cycles
 
     datapoints = 4
     data = []
 
-    sampleTime = 5*60
+    sampleTime = 60
     cycleTime = samples * sampleTime
     # sync to whole minute
     waitTime = (cycleTime + sampleTime) - (time.time() % cycleTime)
