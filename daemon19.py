@@ -26,7 +26,7 @@ DEBUG = False
 class MyDaemon(Daemon):
   def run(self):
     sampleptr = 0
-    cycles = 2
+    cycles = 6
     SamplesPerCycle = 1
     samples = SamplesPerCycle * cycles
 
