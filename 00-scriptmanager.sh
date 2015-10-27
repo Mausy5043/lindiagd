@@ -112,7 +112,7 @@ destale 99
 # in the unlikely event that the mount was lost,
 # remount it here.
 MOUNTPOINT=/mnt/share1
-MOUNTDRIVE=10.0.1.220:/srv/array1/dataspool
+MOUNTDRIVE=boson.lan:/srv/array1/dataspool
 if grep -qs $MOUNTPOINT /proc/mounts; then
   # It's mounted.
   echo "mounted"
