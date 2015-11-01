@@ -80,15 +80,18 @@ def do_work():
   outHistLoad = commands.getoutput("cat /proc/loadavg").replace(" ",", ").replace("/",", ")
   if DEBUG:print outHistLoad
 
-  # 5 datapoints gathered here
+  # 5 datapoints gathered here\
+  outCpuUS = outCpuSY = outCpuID = outCpuWA = outCpuST = 0
   outCpu = commands.getoutput("dstat 1 2").splitlines()
   if DEBUG:print "dstat   :",outCpu
-  outCpu = outCpu[3].split()
-  outCpuUS = outCpu[0]
-  outCpuSY = outCpu[1]
-  outCpuID = outCpu[2]
-  outCpuWA = outCpu[3]
-  outCpuST = 0
+  if (length(outCpu) == 5):
+    outCpu = outCpu[3].split()
+    outCpuUS = outCpu[0]
+    outCpuSY = outCpu[1]
+    outCpuID = outCpu[2]
+    outCpuWA = outCpu[3]
+    outCpuST = 0
+
   if DEBUG: print outHistLoad, outCpuUS, outCpuSY, outCpuID, outCpuWA, outCpuST
   return '{0}, {1}, {2}, {3}, {4}, {5}'.format(outHistLoad, outCpuUS, outCpuSY, outCpuID, outCpuWA, outCpuST)
 
