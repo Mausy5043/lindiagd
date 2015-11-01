@@ -84,7 +84,7 @@ def do_work():
   outCpuUS = outCpuSY = outCpuID = outCpuWA = outCpuST = 0
   outCpu = commands.getoutput("dstat 1 2").splitlines()
   if DEBUG:print "dstat   :",outCpu
-  if (length(outCpu) == 5):
+  if (len(outCpu) == 5):
     outCpu = outCpu[3].split()
     outCpuUS = outCpu[0]
     outCpuSY = outCpu[1]
