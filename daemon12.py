@@ -33,8 +33,9 @@ class MyDaemon(Daemon):
     while True:
       try:
         startTime = time.time()
+
         result = do_work().split(',')
-        if DEBUG: print result
+        if DEBUG: print "result :", result
 
         data.append(map(float, result))
         if (len(data) > samples):data.pop(0)
@@ -42,7 +43,7 @@ class MyDaemon(Daemon):
 
         # report sample average
         if (sampleptr % SamplesPerCycle == 0):
-          if DEBUG:print data
+          if DEBUG:print "data   :",data
           somma = map(sum,zip(*data))
           # not all entries should be float
           # 0.37, 0.18, 0.17, 4, 143, 32147, 3, 4, 93, 0, 0
@@ -66,7 +67,7 @@ class MyDaemon(Daemon):
         syslog.syslog(syslog.LOG_ALERT,e.__doc__)
         syslog_trace(traceback.format_exc())
         raise
-        
+
 def syslog_trace(trace):
   '''Log a python stack trace to syslog'''
   log_lines = trace.split('\n')
@@ -80,7 +81,9 @@ def do_work():
   if DEBUG:print outHistLoad
 
   # 5 datapoints gathered here
-  outCpu = commands.getoutput("dstat 1 2").splitlines()[3].split()
+  outCpu = commands.getoutput("dstat 1 2").splitlines()
+  if DEBUG:print "dstat   :",outCpu
+  outCpu = outCpu[3].split()
   outCpuUS = outCpu[0]
   outCpuSY = outCpu[1]
   outCpuID = outCpu[2]
