@@ -101,21 +101,27 @@ def do_mv_data(rpath):
 
 def do_xml(wpath):
   #
+  usr							= commands.getoutput("whoami")
   uname           = os.uname()
-  Tcpu            = "---" #float(commands.getoutput("cat /sys/class/thermal/thermal_zone0/temp"))/1000
-  fcpu            = float(commands.getoutput("cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"))/1000
-  synodiagdbranch = commands.getoutput("cat $HOME/.synodiagd.branch")
+
+  Tcpu            = "---"
+
+  fi              = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"
+  f 							= file(fi,'r')
+  fcpu						= float(f.read().strip('\n'))/1000
+  f.close()
+
+  fi              = "/home/"+ usr +"/.synodiagd.branch"
+  f 							= file(fi,'r')
+  synodiagdbranch = f.read().strip('\n')
+  f.close()
+
   uptime          = commands.getoutput("uptime")
   dfh             = commands.getoutput("df")
   freeh           = commands.getoutput("free")
-  mds							= commands.getoutput("cat /proc/mdstat |awk 'NR<10'")
+  mds							= commands.getoutput("cat /proc/mdstat |awk 'NR<10'")  #FIXME
   psout           = commands.getoutput("top -b -n 1 | cut -c 37- | awk 'NR>4' | head -10 | sed 's/&/\&amp;/g' | sed 's/>/\&gt;/g'")
-  #Tsda            = commands.getoutput("smartctl -A /dev/sda -d ata |grep Temperature_Celsius |awk '{print $10}'")
-  #Tsdb            = commands.getoutput("smartctl -A /dev/sdb -d ata |grep Temperature_Celsius |awk '{print $10}'")
-  #Tsdc            = commands.getoutput("smartctl -A /dev/sdc -d ata |grep Temperature_Celsius |awk '{print $10}'")
-  #Tsdd            = commands.getoutput("smartctl -A /dev/sdd -d ata |grep Temperature_Celsius |awk '{print $10}'")
-  #
-  #
+
   sda.smart()
   sdb.smart()
   sdc.smart()

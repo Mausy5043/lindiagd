@@ -76,8 +76,10 @@ def syslog_trace(trace):
       syslog.syslog(syslog.LOG_ALERT,line)
 
 def do_work():
-  # 6 datapoints gathered here
-  outHistLoad = commands.getoutput("cat /proc/loadavg").replace(" ",", ").replace("/",", ")
+  # 6 datapoints gathered here  fi   = "/proc/loadavg"
+  f    = file(fi,'r')
+  outHistLoad = f.read().strip('\n').replace(" ",", ").replace("/",", ")
+  f.close()
   if DEBUG:print outHistLoad
 
   # 5 datapoints gathered here\
