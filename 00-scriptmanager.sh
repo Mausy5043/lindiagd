@@ -4,8 +4,9 @@
 # * It synchronises the local copy of synodiagd with the current github branch
 # * It checks the state of and (re-)starts daemons if they are not (yet) running.
 
-branch=$(cat ~/.synodiagd.branch)
-clnt=$(hostname)
+CLNT=$(hostname)
+branch=$(cat /root/.synodiagd.branch)
+
 cd /root/synodiagd
 PATH=$PATH:/opt/bin:/opt/sbin
 
