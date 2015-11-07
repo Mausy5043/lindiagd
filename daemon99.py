@@ -102,6 +102,7 @@ def do_mv_data(rpath):
 def do_xml(wpath):
   #
   usr							= commands.getoutput("whoami")
+  home            = os.path.expanduser("~")
   uname           = os.uname()
 
   Tcpu            = "---"
@@ -111,7 +112,7 @@ def do_xml(wpath):
   fcpu						= float(f.read().strip('\n'))/1000
   f.close()
 
-  fi              = "/home/"+ usr +"/.synodiagd.branch"
+  fi              = home +"/.synodiagd.branch"
   f 							= file(fi,'r')
   synodiagdbranch = f.read().strip('\n')
   f.close()
