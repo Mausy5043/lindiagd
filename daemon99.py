@@ -120,7 +120,7 @@ def do_xml(wpath):
   uptime          = commands.getoutput("uptime")
   dfh             = commands.getoutput("df")
   freeh           = commands.getoutput("free")
-  mds							= commands.getoutput("cat /proc/mdstat |awk 'NR<10'")  #FIXME
+  mds							= commands.getoutput("cat /proc/mdstat |awk 'NR<9'")  #FIXME
   psout           = commands.getoutput("top -b -n 1 | cut -c 37- | awk 'NR>4' | head -10 | sed 's/&/\&amp;/g' | sed 's/>/\&gt;/g'")
 
   sda.smart()
