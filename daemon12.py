@@ -28,8 +28,10 @@ class MyDaemon(Daemon):
     cycleTime = samples * sampleTime
     # sync to whole minute
     waitTime = (cycleTime + sampleTime) - (time.time() % cycleTime)
-    if DEBUG:print "Waiting {0} s".format(int(waitTime))
-    time.sleep(waitTime)
+    if DEBUG:
+      print "Not waiting {0} s".format(int(waitTime))
+    else:
+      time.sleep(waitTime)
     while True:
       try:
         startTime = time.time()
@@ -88,9 +90,9 @@ def do_work():
   outCpu = commands.getoutput("dstat 1 2").splitlines()
   if DEBUG:print "dstat   :",outCpu
   if (len(outCpu) == 5):
-    outCpu = outCpu[3].split()
+    outCpu = outCpu[-1].split('|')[0].split()
     outCpuUS = outCpu[0]
-    outCpuSY = outCpu[1]
+    outCpuSY = int(outCpu[1]) + int(outCpu[4]) + int(outCpu[5])
     outCpuID = outCpu[2]
     outCpuWA = outCpu[3]
     outCpuST = 0
