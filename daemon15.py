@@ -88,8 +88,8 @@ def do_work():
     warnlog = commands.getoutput("journalctl --since=00:00:00 --no-pager -p 4 |wc -l").split()[0]
     syslog  = commands.getoutput("journalctl --since=00:00:00 --no-pager |wc -l").split()[0]
   else:
-    critlog = wc("/var/log/0emerg.log") + wc("/var/log/1alert.log") + wc("/var/log/2critical.log") + wc("/var/log/3err.log")
-    warnlog = wc("/var/log/4warn.log")
+    kernlog = wc("/var/log/kern.log")
+    messlog = wc("/var/log/messages")
     syslog  = wc("/var/log/syslog")
   return '{0}, {1}, {2}'.format(kernlog, messlog, syslog)
 
