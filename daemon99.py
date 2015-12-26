@@ -8,11 +8,13 @@
 
 # daemon99.py creates an XML-file and uploads data to the server.
 
+import syslog, traceback
 import os, sys, shutil, glob, platform, time, commands
 from libdaemon import Daemon
 from libsmart import SmartDisk
 
 DEBUG = False
+IS_SYSTEMD = os.path.isfile('/bin/journalctl')
 os.nice(8)
 
 sda = SmartDisk("/dev/sda -d ata",0)
@@ -38,16 +40,30 @@ class MyDaemon(Daemon):
     else:
       time.sleep(waitTime)
     while True:
-      startTime=time.time()
+      try:
+        startTime=time.time()
 
-      if os.path.ismount(mount_path):
-        do_mv_data(remote_path)
-        do_xml(remote_path)
+        if os.path.ismount(mount_path):
+          do_mv_data(remote_path)
+          do_xml(remote_path)
 
-      waitTime = sampleTime - (time.time() - startTime) - (startTime%sampleTime)
-      if (waitTime > 0):
-        if DEBUG:print "Waiting {0} s".format(int(waitTime))
-        time.sleep(waitTime)
+        waitTime = sampleTime - (time.time() - startTime) - (startTime%sampleTime)
+        if (waitTime > 0):
+          if DEBUG:print "Waiting {0} s".format(int(waitTime))
+          time.sleep(waitTime)
+      except Exception as e:
+        if DEBUG:
+          print("Unexpected error:")
+          print e.message
+        syslog.syslog(syslog.LOG_ALERT,e.__doc__)
+        syslog_trace(traceback.format_exc())
+        raise
+def syslog_trace(trace):
+  '''Log a python stack trace to syslog'''
+  log_lines = trace.split('\n')
+  for line in log_lines:
+    if len(line):
+      syslog.syslog(syslog.LOG_ALERT,line)
 
 def do_mv_data(rpath):
   hostlock = rpath + '/host.lock'
@@ -83,7 +99,6 @@ def do_mv_data(rpath):
     count_internal_locks=0
     for file in glob.glob(r'/tmp/synodiagd/*.lock'):
       count_internal_locks += 1
-
     if DEBUG:print "{0} internal locks".format(count_internal_locks)
 
   if DEBUG:print "0 internal locks"
