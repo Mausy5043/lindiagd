@@ -84,13 +84,13 @@ def do_work():
     #       level or a lower (hence more important) log level are shown. If a range is specified, all messages within the range
     #       are shown, including both the start and the end value of the range. This will add "PRIORITY=" matches for the
     #       specified priorities.
-    critlog = commands.getoutput("journalctl --since=00:00:00 --no-pager -p 0..3 |wc -l").split()[0]
-    warnlog = commands.getoutput("journalctl --since=00:00:00 --no-pager -p 4 |wc -l").split()[0]
+    kernlog = commands.getoutput("journalctl --since=00:00:00 --no-pager -p 0..3 |wc -l").split()[0]
+    messlog = commands.getoutput("journalctl --since=00:00:00 --no-pager -p 4 |wc -l").split()[0]
     syslog  = commands.getoutput("journalctl --since=00:00:00 --no-pager |wc -l").split()[0]
   else:
     kernlog = wc("/var/log/kern.log")
     messlog = wc("/var/log/messages")
-    syslog  = wc("/var/log/syslog")
+    syslog  = wc("/var/log/syslog.log")
   return '{0}, {1}, {2}'.format(kernlog, messlog, syslog)
 
 def do_report(result):
