@@ -13,25 +13,19 @@ import os, sys, time, math, commands
 from libdaemon import Daemon
 
 DEBUG = False
+IS_SYSTEMD = os.path.isfile('/bin/journalctl')
 
 class MyDaemon(Daemon):
   def run(self):
-    sampleptr = 0
-    cycles = 3
-    SamplesPerCycle = 5
-    samples = SamplesPerCycle * cycles
+    reportTime = 60                                 # time [s] between reports
+    cycles = 3                                      # number of cycles to aggregate
+    samplesperCycle = 5                             # total number of samples in each cycle
+    samples = samplesperCycle * cycles              # total number of samples averaged
+    sampleTime = reportTime/samplesperCycle         # time [s] between samples
+    cycleTime = samples * sampleTime                # time [s] per cycle
 
-    datapoints = 11
-    data = []      # data = [None for i in range(samples)]
+    data = []
 
-    sampleTime = 12
-    cycleTime = samples * sampleTime
-    # sync to whole minute
-    waitTime = (cycleTime + sampleTime) - (time.time() % cycleTime)
-    if DEBUG:
-      print "Not waiting {0} s".format(int(waitTime))
-    else:
-      time.sleep(waitTime)
     while True:
       try:
         startTime = time.time()
@@ -41,22 +35,19 @@ class MyDaemon(Daemon):
 
         data.append(map(float, result))
         if (len(data) > samples):data.pop(0)
-        sampleptr = sampleptr + 1
 
         # report sample average
-        if (sampleptr % SamplesPerCycle == 0):
+        if (startTime % reportTime < sampleTime):
           if DEBUG:print "data   :",data
           somma = map(sum,zip(*data))
           # not all entries should be float
           # 0.37, 0.18, 0.17, 4, 143, 32147, 3, 4, 93, 0, 0
           averages = [format(s / len(data), '.3f') for s in somma]
-          averages[3]=int(data[sampleptr-1][3])
-          averages[4]=int(data[sampleptr-1][4])
-          averages[5]=int(data[sampleptr-1][5])
+          averages[3]=int(data[-1][3])
+          averages[4]=int(data[-1][4])
+          averages[5]=int(data[-1][5])
           if DEBUG:print "average:", averages
           do_report(averages)
-          if (sampleptr == samples):
-            sampleptr = 0
 
         waitTime = sampleTime - (time.time() - startTime) - (startTime%sampleTime)
         if (waitTime > 0):

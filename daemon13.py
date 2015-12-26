@@ -9,39 +9,66 @@
 # daemon13.py measures the network traffic.
 # These are all counters, therefore no averaging is needed.
 
-import os, sys, time, math, commands
+import syslog, traceback
+import os, sys, time, math
 from libdaemon import Daemon
 
 DEBUG = False
+IS_SYSTEMD = os.path.isfile('/bin/journalctl')
 
 class MyDaemon(Daemon):
   def run(self):
-    sampleptr = 0
-    samples = 1
-    datapoints = 6
+    reportTime = 60                                 # time [s] between reports
+    cycles = 1                                      # number of cycles to aggregate
+    samplesperCycle = 1                             # total number of samples in each cycle
+    samples = samplesperCycle * cycles              # total number of samples averaged
+    sampleTime = reportTime/samplesperCycle         # time [s] between samples
+    cycleTime = samples * sampleTime                # time [s] per cycle
 
-    sampleTime = 60
-    cycleTime = samples * sampleTime
-    # sync to whole minute
-    waitTime = (cycleTime + sampleTime) - (time.time() % cycleTime)
-    if DEBUG:print "Waiting {0} s".format(int(waitTime))
-    time.sleep(waitTime)
+    data = []                                       # array for holding sampledata
+
     while True:
-      startTime = time.time()
+      try:
+        startTime = time.time()
 
-      result = do_work().split(',')
-      if DEBUG:print result
-      data = map(int, result)
+        result = do_work().split(',')
+        data = map(int, result)
 
-      sampleptr = sampleptr + 1
-      if (sampleptr == samples):
-        do_report(data)
-        sampleptr = 0
+        # report sample average
+        if (startTime % reportTime < sampleTime):
+          if DEBUG:print data
+          averages = data
+          #averages = sum(data[:]) / len(data)
+          #if DEBUG:print averages
+          do_report(averages)
 
-      waitTime = sampleTime - (time.time() - startTime) - (startTime%sampleTime)
-      if (waitTime > 0):
-        if DEBUG:print "Waiting {0} s".format(int(waitTime))
-        time.sleep(waitTime)
+        waitTime = sampleTime - (time.time() - startTime) - (startTime%sampleTime)
+        if (waitTime > 0):
+          if DEBUG:print "Waiting {0} s".format(int(waitTime))
+          time.sleep(waitTime)
+
+      except Exception as e:
+        if DEBUG:
+          print("Unexpected error:")
+          print e.message
+        syslog.syslog(syslog.LOG_ALERT,e.__doc__)
+        syslog_trace(traceback.format_exc())
+        raise
+
+def syslog_trace(trace):
+  '''Log a python stack trace to syslog'''
+  log_lines = trace.split('\n')
+  for line in log_lines:
+    if len(line):
+      syslog.syslog(syslog.LOG_ALERT,line)
+
+def cat(filename):
+  ret = ""
+  if os.path.isfile(filename):
+    f = file(filename,'r')
+    ret = f.read().strip('\n')
+    f.close()
+  return ret
 
 def do_work():
   # 6 datapoints gathered here
@@ -52,11 +79,8 @@ def do_work():
   etOut = 0
   loIn = 0
   loOut = 0
-  fi = "/proc/net/dev"
-  f    = file(fi,'r')
-  cat = f.read().strip('\n')
-  f.close()
-  list = cat.replace(":"," ").splitlines()
+
+  list = cat("/proc/net/dev").replace(":"," ").splitlines()
   for line in range(2,len(list)):
     if DEBUG:print list[line]
     device = list[line].split()[0]
@@ -78,7 +102,7 @@ def do_work():
 
 def do_report(result):
   # Get the time and date in human-readable form and UN*X-epoch...
-  outDate = commands.getoutput("date '+%F %H:%M:%S, %s'")
+  outDate = time.strftime('%Y-%m-%dT%H:%M:%S, %s')
 
   result = ', '.join(map(str, result))
   flock = '/tmp/synodiagd/13.lock'
