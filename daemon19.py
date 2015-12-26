@@ -9,6 +9,7 @@
 # daemon19.py measures the temperature of the diskarray.
 # uses moving averages
 
+import syslog, traceback
 import os, sys, time, math, commands
 from libdaemon import Daemon
 from libsmart import SmartDisk
@@ -22,46 +23,47 @@ sdc = SmartDisk("/dev/sdc -d ata",0)
 sdd = SmartDisk("/dev/sdd -d ata",0)
 
 DEBUG = False
+IS_SYSTEMD = os.path.isfile('/bin/journalctl')
 
 class MyDaemon(Daemon):
-  def run(self):
-    sampleptr = 0
-    cycles = 6
-    SamplesPerCycle = 5
-    samples = SamplesPerCycle * cycles
+  def run(self):  
+    reportTime = 60                                 # time [s] between reports
+    cycles = 6                                      # number of cycles to aggregate
+    samplesperCycle = 5                             # total number of samples in each cycle
+    samples = samplesperCycle * cycles              # total number of samples averaged
+    sampleTime = reportTime/samplesperCycle         # time [s] between samples
+    cycleTime = samples * sampleTime                # time [s] per cycle
 
-    datapoints = 4
-    data = []
+    data = []                                       # array for holding sampledata
 
-    sampleTime = 60
-    cycleTime = samples * sampleTime
-    # sync to whole minute
-    waitTime = (cycleTime + sampleTime) - (time.time() % cycleTime)
-    if DEBUG:print "Waiting {0} s".format(int(waitTime))
-    time.sleep(waitTime)
     while True:
-      startTime = time.time()
+      try:
+        startTime = time.time()
 
-      result = do_work().split(',')
-      if DEBUG: print result
+        result = do_work().split(',')
+        if DEBUG: print result
 
-      data.append(map(float, result))
-      if (len(data) > samples):data.pop(0)
-      sampleptr = sampleptr + 1
+        data.append(map(float, result))
+        if (len(data) > samples):data.pop(0)
 
-      # report sample average
-      if (sampleptr % SamplesPerCycle == 0):
-        somma = map(sum,zip(*data))
-        averages = [format(s / len(data), '.3f') for s in somma]
-        if DEBUG:print averages
-        do_report(averages)
-        if (sampleptr == samples):
-          sampleptr = 0
+        # report sample average
+        if (startTime % reportTime < sampleTime):
+          somma = map(sum,zip(*data))
+          averages = [format(s / len(data), '.3f') for s in somma]
+          if DEBUG:print averages
+          do_report(averages)
 
-      waitTime = sampleTime - (time.time() - startTime) - (startTime%sampleTime)
-      if (waitTime > 0):
-        if DEBUG:print "Waiting {0} s".format(int(waitTime))
-        time.sleep(waitTime)
+        waitTime = sampleTime - (time.time() - startTime) - (startTime%sampleTime)
+        if (waitTime > 0):
+          if DEBUG:print "Waiting {0} s".format(int(waitTime))
+          time.sleep(waitTime)
+      except Exception as e:
+        if DEBUG:
+          print("Unexpected error:")
+          print e.message
+        syslog.syslog(syslog.LOG_ALERT,e.__doc__)
+        syslog_trace(traceback.format_exc())
+        raise
 
 def do_work():
   # 4 datapoints gathered here
