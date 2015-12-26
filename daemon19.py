@@ -26,7 +26,7 @@ DEBUG = False
 IS_SYSTEMD = os.path.isfile('/bin/journalctl')
 
 class MyDaemon(Daemon):
-  def run(self):  
+  def run(self):
     reportTime = 60                                 # time [s] between reports
     cycles = 6                                      # number of cycles to aggregate
     samplesperCycle = 5                             # total number of samples in each cycle
@@ -64,6 +64,13 @@ class MyDaemon(Daemon):
         syslog.syslog(syslog.LOG_ALERT,e.__doc__)
         syslog_trace(traceback.format_exc())
         raise
+
+def syslog_trace(trace):
+  '''Log a python stack trace to syslog'''
+  log_lines = trace.split('\n')
+  for line in log_lines:
+    if len(line):
+      syslog.syslog(syslog.LOG_ALERT,line)
 
 def do_work():
   # 4 datapoints gathered here
