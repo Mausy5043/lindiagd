@@ -29,7 +29,7 @@ class MyDaemon(Daemon):
   def run(self):
     reportTime = 60                                 # time [s] between reports
     cycles = 6                                      # number of cycles to aggregate
-    samplesperCycle = 3                             # total number of samples in each cycle
+    samplesperCycle = 1                             # total number of samples in each cycle
     samples = samplesperCycle * cycles              # total number of samples averaged
     sampleTime = reportTime/samplesperCycle         # time [s] between samples
     cycleTime = samples * sampleTime                # time [s] per cycle
