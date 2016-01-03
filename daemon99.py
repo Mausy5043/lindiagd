@@ -58,9 +58,9 @@ class MyDaemon(Daemon):
         syslog.syslog(syslog.LOG_ALERT,e.__doc__)
         syslog_trace(traceback.format_exc())
         raise
-        
+
 def syslog_trace(trace):
-  '''Log a python stack trace to syslog'''
+  #Log a python stack trace to syslog
   log_lines = trace.split('\n')
   for line in log_lines:
     if len(line):

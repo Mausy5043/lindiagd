@@ -66,7 +66,7 @@ class MyDaemon(Daemon):
         raise
 
 def syslog_trace(trace):
-  '''Log a python stack trace to syslog'''
+  #Log a python stack trace to syslog
   log_lines = trace.split('\n')
   for line in log_lines:
     if len(line):
