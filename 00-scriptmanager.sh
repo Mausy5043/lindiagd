@@ -22,6 +22,7 @@ PATH=$PATH:/opt/bin:/opt/sbin
  DIFFd14=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon14.py)
  DIFFd15=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon15.py)
  DIFFd19=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon19.py)
+ DIFFd98=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon98.py)
  DIFFd99=$(git --no-pager diff --name-only $branch..origin/$branch -- ./daemon99.py)
 
   # Synchronise local copy with $branch
@@ -61,6 +62,10 @@ if [[ -n "$DIFFd19" ]]; then
   logger -t synodiagd "Source daemon19 has changed."
   ./daemon19.py stop
 fi
+if [[ -n "$DIFFd98" ]]; then
+  logger -t synodiagd "Source daemon98 has changed."
+  ./daemon98.py stop
+fi
 if [[ -n "$DIFFd99" ]]; then
   logger -t synodiagd "Source daemon99 has changed."
   ./daemon99.py stop
@@ -74,6 +79,7 @@ if [[ -n "$DIFFlibd" ]]; then
   ./daemon14.py stop
   ./daemon15.py stop
   ./daemon19.py stop
+  ./daemon98.py stop
   ./daemon99.py stop
   rm ./libdaemon.pyc
 fi
@@ -105,6 +111,7 @@ destale 13
 destale 14
 destale 15
 destale 19
+destale 98
 destale 99
 
 #popd

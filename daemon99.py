@@ -6,10 +6,10 @@
 
 # Adapted by M.Hendrix [2015]
 
-# daemon99.py creates an XML-file and uploads data to the server.
+# daemon99.py creates an XML-file on to the server.
 
 import syslog, traceback
-import os, sys, shutil, glob, platform, time, commands
+import os, sys, platform, time, commands
 from libdaemon import Daemon
 from libsmart import SmartDisk
 
@@ -44,7 +44,6 @@ class MyDaemon(Daemon):
         startTime=time.time()
 
         if os.path.ismount(mount_path):
-          do_mv_data(remote_path)
           do_xml(remote_path)
 
         waitTime = sampleTime - (time.time() - startTime) - (startTime%sampleTime)
@@ -65,55 +64,6 @@ def syslog_trace(trace):
   for line in log_lines:
     if len(line):
       syslog.syslog(syslog.LOG_ALERT,line)
-
-def do_mv_data(rpath):
-  hostlock = rpath + '/host.lock'
-  clientlock = rpath + '/client.lock'
-  count_internal_locks=1
-
-  #
-  #rpath='/tmp/test'
-  #
-
-  # wait 3 seconds for processes to finish
-  time.sleep(3)
-
-  while os.path.isfile(hostlock):
-    # wait while the server has locked the directory
-    if DEBUG:print "host locked (waiting)"
-    time.sleep(1)
-
-  # server already sets the client.lock. Do it anyway.
-  if DEBUG:print "set clientlock"
-  lock(clientlock)
-
-  # prevent race conditions
-  while os.path.isfile(hostlock):
-    # wait while the server has locked the directory
-    if DEBUG:print "host got locked (waiting)"
-    time.sleep(1)
-
-  if DEBUG:print "host unlocked"
-
-  while (count_internal_locks > 0):
-    time.sleep(1)
-    count_internal_locks=0
-    for file in glob.glob(r'/tmp/synodiagd/*.lock'):
-      count_internal_locks += 1
-    if DEBUG:print "{0} internal locks".format(count_internal_locks)
-
-  if DEBUG:print "0 internal locks"
-
-  for file in glob.glob(r'/tmp/synodiagd/*.csv'):
-    if DEBUG:print file
-    if os.path.isfile(clientlock):
-      if not (os.path.isfile(rpath + "/" + os.path.split(file)[1])):
-        shutil.move(file, rpath)
-
-  unlock(clientlock)
-  if DEBUG:print "unset clientlock"
-
-  return
 
 def do_xml(wpath):
   #
