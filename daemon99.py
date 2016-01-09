@@ -67,7 +67,7 @@ def syslog_trace(trace):
 
 def do_xml(wpath):
   #
-  usr							= commands.getoutput("whoami")
+  #usr							= commands.getoutput("whoami")
   home            = os.path.expanduser("~")
   uname           = os.uname()
 
