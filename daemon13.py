@@ -49,7 +49,7 @@ class MyDaemon(Daemon):
 
       except Exception as e:
         if DEBUG:
-          print("Unexpected error:")
+          print "Unexpected error:"
           print e.message
         syslog.syslog(syslog.LOG_ALERT,e.__doc__)
         syslog_trace(traceback.format_exc())
