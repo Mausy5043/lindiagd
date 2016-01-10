@@ -12,6 +12,7 @@ import syslog, traceback
 import os, sys, platform, time, commands
 from libdaemon import Daemon
 from libsmart import SmartDisk
+import subprocess
 
 DEBUG = False
 IS_SYSTEMD = os.path.isfile('/bin/journalctl')
@@ -87,7 +88,16 @@ def do_xml(wpath):
   dfh             = commands.getoutput("df")
   freeh           = commands.getoutput("free")
   mds							= commands.getoutput("cat /proc/mdstat |awk 'NR<9'")  #FIXME
-  psout           = commands.getoutput("top -b -n 1 | cut -c 37- | awk 'NR>4' | head -10 | sed 's/&/\&amp;/g' | sed 's/>/\&gt;/g'")
+  #psout           = commands.getoutput("top -b -n 1 | cut -c 37- | awk 'NR>4' | head -10 | sed 's/&/\&amp;/g' | sed 's/>/\&gt;/g'")
+  p1              = subprocess.Popen(["ps", "-e", "-o", "pcpu,args"], stdout=subprocess.PIPE)
+  p2              = subprocess.Popen(["cut", "-c", "-132"], stdin=p1.stdout, stdout=subprocess.PIPE)
+  p3              = subprocess.Popen(["awk", "NR>2"], stdin=p2.stdout, stdout=subprocess.PIPE)
+  p4              = subprocess.Popen(["sort", "-nr"], stdin=p3.stdout, stdout=subprocess.PIPE)
+  p5              = subprocess.Popen(["head", "-10"], stdin=p4.stdout, stdout=subprocess.PIPE)
+  p6              = subprocess.Popen(["sed", "s/&/\&amp;/g"], stdin=p5.stdout, stdout=subprocess.PIPE)
+  p7              = subprocess.Popen(["sed", "s/>/\&gt;/g"], stdin=p6.stdout, stdout=subprocess.PIPE)
+  p8              = subprocess.Popen(["sed", "s/</\&lt;/g"], stdin=p7.stdout, stdout=subprocess.PIPE)
+  psout           = p8.stdout.read()
 
   sda.smart()
   sdb.smart()
