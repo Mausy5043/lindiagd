@@ -95,8 +95,7 @@ def do_mv_data(rpath):
 
   for fname in glob.glob(r'/tmp/synodiagd/*.csv'):
     if DEBUG:print fname
-    if os.path.isfile(clientlock):
-      if not (os.path.isfile(rpath + "/" + os.path.split(fname)[1])):
+    if os.path.isfile(clientlock) and not (os.path.isfile(rpath + "/" + os.path.split(fname)[1])):
         shutil.move(fname, rpath)
 
   unlock(clientlock)
