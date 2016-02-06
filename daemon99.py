@@ -75,12 +75,12 @@ def do_xml(wpath):
   Tcpu            = "---"
 
   fi              = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"
-  f 							= file(fi,'r')
+  f 							= open(fi,'r')
   fcpu						= float(f.read().strip('\n'))/1000
   f.close()
 
   fi              = home +"/.synodiagd.branch"
-  f 							= file(fi,'r')
+  f 							= open(fi,'r')
   synodiagdbranch = f.read().strip('\n')
   f.close()
 
@@ -138,7 +138,7 @@ def do_xml(wpath):
   Infod=sdd.getinfo()
 
   #
-  f = file(wpath + '/status.xml', 'w')
+  f = open(wpath + '/status.xml', 'w')
 
   f.write('<server>\n')
 

@@ -94,7 +94,7 @@ def do_report(result):
   result = ', '.join(map(str, result))
   flock = '/tmp/synodiagd/19.lock'
   lock(flock)
-  f = file('/tmp/synodiagd/19-tempdisk.csv', 'a')
+  f = open('/tmp/synodiagd/19-tempdisk.csv', 'a')
   f.write('{0}, {1}\n'.format(outDate, result) )
   f.close()
   unlock(flock)
