@@ -12,6 +12,7 @@ fi
 
 #pushd doesnt work on busybox
 cd $HOME/synodiagd
+  chmod 744 00-scriptmanager.sh
   ./00-scriptmanager.sh
 #popd doesnt work on busybox
 cd $HOME
