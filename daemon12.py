@@ -25,12 +25,14 @@ class MyDaemon(Daemon):
     cycleTime = samples * sampleTime                # time [s] per cycle
 
     data = []
+    raw = [0] * 16
 
     while True:
       try:
         startTime = time.time()
 
-        result = do_work().split(',')
+        result,raw = do_work(raw)
+        result     = result.split(',')
         if DEBUG: print "result :", result
 
         data.append(map(float, result))
@@ -68,7 +70,7 @@ def syslog_trace(trace):
     if line:
       syslog.syslog(syslog.LOG_ALERT,line)
 
-def do_work():
+def do_work(stat1):
   # 6 datapoints gathered here
   fi   = "/proc/loadavg"
   f    = open(fi,'r')
@@ -76,20 +78,33 @@ def do_work():
   f.close()
   if DEBUG:print outHistLoad
 
-  # 5 datapoints gathered here\
-  outCpuUS = outCpuSY = outCpuID = outCpuWA = outCpuST = 0
-  outCpu = commands.getoutput("dstat 1 2").splitlines()
-  if DEBUG:print "dstat   :",outCpu
-  if (len(outCpu) == 5):
-    outCpu = outCpu[-1].split('|')[0].split()
-    outCpuUS = outCpu[0]
-    outCpuSY = int(outCpu[1]) + int(outCpu[4]) + int(outCpu[5])
-    outCpuID = outCpu[2]
-    outCpuWA = outCpu[3]
-    outCpuST = 0
+  with open('/proc/stat', 'r') as f:
+    stat2 = f.readlines()[0].split()
+  # ref: https://www.kernel.org/doc/Documentation/filesystems/proc.txt
+  # -1 "cpu"
+  #  0 user: normal processes executing in user mode    0
+  #  1 nice: niced processes executing in user mode     +0
+  #  2 system: processes executing in kernel mode       1
+  #  3 idle: twiddling thumbs                           2
+  #  4 iowait: waiting for I/O to complete              3
+  #  5 irq: servicing interrupts                        +3
+  #  6 softirq: servicing softirqs                      +3
+  #  7 steal: involuntary wait                          +3
+  #  8 guest: running a normal guest                    +1
+  #  9 guest_nice: running a niced guest                +1
 
-  if DEBUG: print outHistLoad, outCpuUS, outCpuSY, outCpuID, outCpuWA, outCpuST
-  return '{0}, {1}, {2}, {3}, {4}, {5}'.format(outHistLoad, outCpuUS, outCpuSY, outCpuID, outCpuWA, outCpuST)
+  stat2 = map(int, stat2[1:])
+  diff0 = [x - y for x, y in zip(stat2, stat1)]
+  sum0 = sum(diff0)
+  perc = [x / float(sum0) * 100. for x in diff0]
+
+  outCpuUS      = perc[0] + perc[1] + perc[8] + perc[9]
+  outCpuSY      = perc[2]
+  outCpuID      = perc[3]
+  outCpuWA      = perc[4] + perc[5] + perc[6] + perc[7]
+  outCpuST = 0   # with the above code this may be omitted.
+
+  return ('{0}, {1}, {2}, {3}, {4}, {5}'.format(outHistLoad, outCpuUS, outCpuSY, outCpuID, outCpuWA, outCpuST), stat2)
 
 def do_report(result):
   # Get the time and date in human-readable form and UN*X-epoch...
